@@ -63,8 +63,6 @@ public class DoubleJump extends Module {
             return;
         }
 
-        // All pre-checks passed, now handle double jump
-        event.setCancelled(true);
 
         // Check for cooldown
         UUID uuid = player.getUniqueId();
@@ -76,6 +74,8 @@ public class DoubleJump extends Module {
         // Execute double jump
         player.setVelocity(player.getLocation().getDirection().multiply(launch).setY(launchY));
         executeActions(player, actions);
+        // All pre-checks passed, now handle double jump
+        event.setCancelled(true);
     }
 
     @EventHandler
