@@ -99,6 +99,11 @@ public class ItemStackBuilder {
 
     public ItemStackBuilder withName(String name) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
+
+        if (ITEM_STACK == XMaterial.AIR.parseItem()) {
+            return this;
+        }
+
         meta.setDisplayName(TextUtil.color(name));
         ITEM_STACK.setItemMeta(meta);
         return this;
@@ -106,6 +111,11 @@ public class ItemStackBuilder {
 
     public ItemStackBuilder withName(String name, Player player) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
+
+        if (ITEM_STACK == XMaterial.AIR.parseItem()) {
+            return this;
+        }
+
         meta.setDisplayName(TextUtil.color(PlaceholderUtil.setPlaceholders(name, player)));
         ITEM_STACK.setItemMeta(meta);
         return this;
@@ -123,6 +133,11 @@ public class ItemStackBuilder {
 
     public ItemStackBuilder withLore(List<String> lore, Player player) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
+
+        if (ITEM_STACK == XMaterial.AIR.parseItem()) {
+            return this;
+        }
+
         List<String> coloredLore = new ArrayList<String>();
         for (String s : lore) {
             s = PlaceholderUtil.setPlaceholders(s, player);
@@ -134,6 +149,11 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder withLore(List<String> lore) {
+
+        if (ITEM_STACK == XMaterial.AIR.parseItem()) {
+            return this;
+        }
+
         final ItemMeta meta = ITEM_STACK.getItemMeta();
         List<String> coloredLore = new ArrayList<String>();
         for (String s : lore) {
@@ -151,65 +171,12 @@ public class ItemStackBuilder {
         return this;
     }
 
-    @SuppressWarnings("deprecation")
-    public ItemStackBuilder withDurability(int durability) {
-        ITEM_STACK.setDurability((short) durability);
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public ItemStackBuilder withData(int data) {
-        ITEM_STACK.setDurability((short) data);
-        return this;
-    }
-
-    public ItemStackBuilder withEnchantment(Enchantment enchantment, final int level) {
-        ITEM_STACK.addUnsafeEnchantment(enchantment, level);
-        return this;
-    }
-
-    public ItemStackBuilder withEnchantment(Enchantment enchantment) {
-        ITEM_STACK.addUnsafeEnchantment(enchantment, 1);
-        return this;
-    }
-
     public ItemStackBuilder withGlow() {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         ITEM_STACK.setItemMeta(meta);
         ITEM_STACK.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
         return this;
-    }
-
-    public ItemStackBuilder withType(Material material) {
-        ITEM_STACK.setType(material);
-        return this;
-    }
-
-    public ItemStackBuilder clearLore() {
-        final ItemMeta meta = ITEM_STACK.getItemMeta();
-        meta.setLore(new ArrayList<String>());
-        ITEM_STACK.setItemMeta(meta);
-        return this;
-    }
-
-    public ItemStackBuilder clearEnchantments() {
-        for (Enchantment enchantment : ITEM_STACK.getEnchantments().keySet()) {
-            ITEM_STACK.removeEnchantment(enchantment);
-        }
-        return this;
-    }
-
-    public ItemStackBuilder withColor(Color color) {
-        Material type = ITEM_STACK.getType();
-        if (type == Material.LEATHER_BOOTS || type == Material.LEATHER_CHESTPLATE || type == Material.LEATHER_HELMET || type == Material.LEATHER_LEGGINGS) {
-            LeatherArmorMeta meta = (LeatherArmorMeta) ITEM_STACK.getItemMeta();
-            meta.setColor(color);
-            ITEM_STACK.setItemMeta(meta);
-            return this;
-        } else {
-            throw new IllegalArgumentException("withColor is only applicable for leather armor!");
-        }
     }
 
     public ItemStack build() {
