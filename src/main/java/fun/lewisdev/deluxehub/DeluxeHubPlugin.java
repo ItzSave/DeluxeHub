@@ -17,7 +17,6 @@ import fun.lewisdev.deluxehub.inventory.InventoryManager;
 import fun.lewisdev.deluxehub.module.ModuleManager;
 import fun.lewisdev.deluxehub.module.ModuleType;
 import fun.lewisdev.deluxehub.module.modules.hologram.HologramManager;
-import fun.lewisdev.deluxehub.utility.TextUtil;
 import fun.lewisdev.deluxehub.utility.UpdateChecker;
 import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
@@ -48,7 +47,7 @@ public class DeluxeHubPlugin extends JavaPlugin {
         getLogger().log(Level.INFO, "|_/ |_ |_ |_| /\\ |_ | | |_| |_)   _)");
         getLogger().log(Level.INFO, "");
         getLogger().log(Level.INFO, "Version: " + getDescription().getVersion());
-        getLogger().log(Level.INFO, "Author: ItsLewizzz");
+        getLogger().log(Level.INFO, "Authors: ItsLewizzz, ItzSave");
         getLogger().log(Level.INFO, "");
 
         // Check if using Spigot
@@ -139,7 +138,6 @@ public class DeluxeHubPlugin extends JavaPlugin {
         } catch (MissingNestedCommandException e) {
             sender.sendMessage(ChatColor.RED + e.getUsage());
         } catch (CommandUsageException e) {
-            //sender.sendMessage(ChatColor.RED + e.getMessage());
             sender.sendMessage(ChatColor.RED + "Usage: " + e.getUsage());
         } catch (WrappedCommandException e) {
             if (e.getCause() instanceof NumberFormatException) {
