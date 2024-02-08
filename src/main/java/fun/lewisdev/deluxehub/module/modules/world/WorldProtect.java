@@ -99,7 +99,9 @@ public class WorldProtect extends Module {
             XMaterial.JUNGLE_TRAPDOOR.parseMaterial(),
             XMaterial.DARK_OAK_TRAPDOOR.parseMaterial(),
             XMaterial.BIRCH_TRAPDOOR.parseMaterial(),
-            XMaterial.SPRUCE_TRAPDOOR.parseMaterial());
+            XMaterial.SPRUCE_TRAPDOOR.parseMaterial(),
+            XMaterial.COPPER_TRAPDOOR.parseMaterial(),
+            XMaterial.IRON_TRAPDOOR.parseMaterial());
 
     public WorldProtect(DeluxeHubPlugin plugin) {
         super(plugin, ModuleType.WORLD_PROTECT);
