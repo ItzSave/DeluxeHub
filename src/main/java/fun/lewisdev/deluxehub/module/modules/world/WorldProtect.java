@@ -48,7 +48,7 @@ public class WorldProtect extends Module {
     private boolean playerDrowning;
     private boolean fireDamage;
 
-    private List<Material> interactables = Arrays.asList(
+    private final List<Material> interactables = Arrays.asList(
             XMaterial.ACACIA_DOOR.parseMaterial(),
             XMaterial.ACACIA_FENCE_GATE.parseMaterial(),
             XMaterial.ANVIL.parseMaterial(),
@@ -90,10 +90,16 @@ public class WorldProtect extends Module {
             XMaterial.OAK_SIGN.parseMaterial(),
             XMaterial.CHEST_MINECART.parseMaterial(),
             XMaterial.OAK_DOOR.parseMaterial(),
-            XMaterial.OAK_TRAPDOOR.parseMaterial(),
             XMaterial.TRAPPED_CHEST.parseMaterial(),
             XMaterial.OAK_BUTTON.parseMaterial(),
-            XMaterial.OAK_DOOR.parseMaterial());
+            XMaterial.OAK_DOOR.parseMaterial(),
+            XMaterial.OAK_TRAPDOOR.parseMaterial(),
+            XMaterial.ACACIA_TRAPDOOR.parseMaterial(),
+            XMaterial.CHERRY_TRAPDOOR.parseMaterial(),
+            XMaterial.JUNGLE_TRAPDOOR.parseMaterial(),
+            XMaterial.DARK_OAK_TRAPDOOR.parseMaterial(),
+            XMaterial.BIRCH_TRAPDOOR.parseMaterial(),
+            XMaterial.SPRUCE_TRAPDOOR.parseMaterial());
 
     public WorldProtect(DeluxeHubPlugin plugin) {
         super(plugin, ModuleType.WORLD_PROTECT);
