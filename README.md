@@ -23,6 +23,9 @@
 
 This project is licensed under the GNU General Public License v3.0 License - see the [LICENSE](LICENSE) file for details.
 
+# Building
+To build this project run `mvn clean install`
+
 <!-- MARKDOWN LINKS & IMAGES -->
 [forks-shield]: https://img.shields.io/github/forks/ItsLewizzz/DeluxeHub.svg?style=for-the-badge
 [forks-url]: https://github.com/ItsLewizzz/DeluxeHub/network/members
