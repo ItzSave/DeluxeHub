@@ -3,7 +3,7 @@ package fun.lewisdev.deluxehub.action;
 import fun.lewisdev.deluxehub.DeluxeHubPlugin;
 import fun.lewisdev.deluxehub.action.actions.*;
 import fun.lewisdev.deluxehub.utility.PlaceholderUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;

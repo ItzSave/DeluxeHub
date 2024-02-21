@@ -1,16 +1,11 @@
 package fun.lewisdev.deluxehub;
 
-import cl.bgmp.minecraft.util.commands.exceptions.CommandException;
-import cl.bgmp.minecraft.util.commands.exceptions.CommandPermissionsException;
-import cl.bgmp.minecraft.util.commands.exceptions.CommandUsageException;
-import cl.bgmp.minecraft.util.commands.exceptions.MissingNestedCommandException;
-import cl.bgmp.minecraft.util.commands.exceptions.WrappedCommandException;
+import co.aikar.commands.PaperCommandManager;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import fun.lewisdev.deluxehub.action.ActionManager;
-import fun.lewisdev.deluxehub.command.CommandManager;
+import fun.lewisdev.deluxehub.commands.DeluxeHubCommand;
 import fun.lewisdev.deluxehub.config.ConfigManager;
 import fun.lewisdev.deluxehub.config.ConfigType;
-import fun.lewisdev.deluxehub.config.Messages;
 import fun.lewisdev.deluxehub.cooldown.CooldownManager;
 import fun.lewisdev.deluxehub.hook.HooksManager;
 import fun.lewisdev.deluxehub.inventory.InventoryManager;
@@ -18,10 +13,8 @@ import fun.lewisdev.deluxehub.module.ModuleManager;
 import fun.lewisdev.deluxehub.module.ModuleType;
 import fun.lewisdev.deluxehub.module.modules.hologram.HologramManager;
 import fun.lewisdev.deluxehub.utility.UpdateChecker;
-import org.bstats.bukkit.MetricsLite;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,7 +27,6 @@ public class DeluxeHubPlugin extends JavaPlugin {
     private ConfigManager configManager;
     private ActionManager actionManager;
     private HooksManager hooksManager;
-    private CommandManager commandManager;
     private CooldownManager cooldownManager;
     private ModuleManager moduleManager;
     private InventoryManager inventoryManager;
@@ -59,14 +51,14 @@ public class DeluxeHubPlugin extends JavaPlugin {
             getLogger().severe("Spigot here: https://www.spigotmc.org/wiki/spigot-installation/.");
             getLogger().severe("The plugin will now disable.");
             getLogger().severe("============= SPIGOT NOT DETECTED =============");
-            getPluginLoader().disablePlugin(this);
+            getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         MinecraftVersion.disableUpdateCheck();
 
         // Enable bStats metrics
-        new MetricsLite(this, BSTATS_ID);
+        new Metrics(this, BSTATS_ID);
 
         // Check plugin hooks
         hooksManager = new HooksManager(this);
@@ -79,10 +71,10 @@ public class DeluxeHubPlugin extends JavaPlugin {
         if (!getServer().getPluginManager().isPluginEnabled(this)) return;
 
         // Command manager
-        commandManager = new CommandManager(this);
-        commandManager.reload();
+        PaperCommandManager manager = new PaperCommandManager(this);
+        registerCommands(manager);
 
-        // Cooldown manager
+        // Cool down manager
         cooldownManager = new CooldownManager();
 
         // Inventory (GUI) manager
@@ -115,6 +107,14 @@ public class DeluxeHubPlugin extends JavaPlugin {
 
     }
 
+    /**
+     * Registers all the various commands.
+     * @param manager PaperCommandManager instance.
+     */
+    private void registerCommands(PaperCommandManager manager) {
+        manager.registerCommand(new DeluxeHubCommand(this));
+    }
+
     public void reload() {
         Bukkit.getScheduler().cancelTasks(this);
         HandlerList.unregisterAll(this);
@@ -124,33 +124,10 @@ public class DeluxeHubPlugin extends JavaPlugin {
         inventoryManager.onDisable();
         inventoryManager.onEnable(this);
 
-        getCommandManager().reload();
 
         moduleManager.loadModules(this);
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String commandLabel, String[] args) {
-        try {
-            getCommandManager().execute(cmd.getName(), args, sender);
-        } catch (CommandPermissionsException e) {
-            Messages.NO_PERMISSION.send(sender);
-        } catch (MissingNestedCommandException e) {
-            sender.sendMessage(ChatColor.RED + e.getUsage());
-        } catch (CommandUsageException e) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + e.getUsage());
-        } catch (WrappedCommandException e) {
-            if (e.getCause() instanceof NumberFormatException) {
-                sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
-            } else {
-                sender.sendMessage(ChatColor.RED + "An internal error has occurred. See console.");
-                e.printStackTrace();
-            }
-        } catch (CommandException e) {
-            sender.sendMessage(ChatColor.RED + e.getMessage());
-        }
-        return true;
-    }
 
     public HologramManager getHologramManager() {
         return (HologramManager) moduleManager.getModule(ModuleType.HOLOGRAMS);
@@ -162,10 +139,6 @@ public class DeluxeHubPlugin extends JavaPlugin {
 
     public ModuleManager getModuleManager() {
         return moduleManager;
-    }
-
-    public CommandManager getCommandManager() {
-        return commandManager;
     }
 
     public CooldownManager getCooldownManager() {

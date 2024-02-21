@@ -69,8 +69,6 @@ public class AutoBroadcast extends Module implements Runnable {
                 if (inDisabledWorld(player.getLocation())) continue;
 
                 broadcasts.get(count).forEach(message -> {
-                    if (message.contains("<center>") && message.contains("</center>"))
-                        message = TextUtil.getCenteredMessage(message);
                     player.sendMessage(TextUtil.color(message));
                 });
 
