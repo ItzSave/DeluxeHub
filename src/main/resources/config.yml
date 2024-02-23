@@ -150,18 +150,18 @@ announcements:
   announcements:
     test1:
       - "&r"
-      - "<center>&e&lANNOUNCEMENT</center>"
-      - "<center>&7Rate this plugin 5 stars on Spigot!</center>"
+      - "&e&lANNOUNCEMENT"
+      - "&7Rate this plugin 5 stars on Spigot!"
       - "&r"
     test2:
       - "&r"
-      - "<center>&e&lANNOUNCEMENT</center>"
-      - "<center>&7This plugin was created by &eItsLewizzz</center>"
+      - "&e&lANNOUNCEMENT"
+      - "&7This plugin was created by &eItsLewizzz"
       - "&r"
     test3:
       - "&r"
-      - "<center>&e&lANNOUNCEMENT</center>"
-      - "<center>&7Configure these messages in the &bconfig.yml</center>"
+      - "&e&lANNOUNCEMENT</center>"
+      - "&7Configure these messages in the &bconfig.yml"
       - "&r"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
