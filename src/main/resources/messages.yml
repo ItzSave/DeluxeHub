@@ -17,8 +17,8 @@ Messages:
     GAMEMODE_INVALID: "%prefix% &e%gamemode% &cis not a valid gamemode"
 
   VANISH:
-    ENABLE: "%prefix% &aYou have now vanished"
-    DISABLE: "%prefix% &cYou have now unvanished"
+    ENABLE: "%prefix% &aYou are now vanished."
+    DISABLE: "%prefix% &cYou are no longer vanished."
 
   FLIGHT:
     ENABLE: "%prefix% &aYou have enabled flight"

@@ -119,7 +119,8 @@ public class DeluxeHubPlugin extends JavaPlugin {
                 new GamemodeCommand(),
                 new LockchatCommand(this),
                 new SetLobbyCommand(this),
-                new LobbyCommand(this)
+                new LobbyCommand(this),
+                new VanishCommand(this)
         ).forEach(manager::registerCommand);
     }
 
