@@ -3,7 +3,6 @@ package fun.lewisdev.deluxehub.module;
 import fun.lewisdev.deluxehub.DeluxeHubPlugin;
 import fun.lewisdev.deluxehub.config.ConfigType;
 import fun.lewisdev.deluxehub.module.modules.chat.*;
-import fun.lewisdev.deluxehub.module.modules.hologram.HologramManager;
 import fun.lewisdev.deluxehub.module.modules.hotbar.HotbarManager;
 import fun.lewisdev.deluxehub.module.modules.player.DoubleJump;
 import fun.lewisdev.deluxehub.module.modules.player.PlayerListener;
@@ -48,8 +47,6 @@ public class ModuleManager {
         registerModule(new AntiWorldDownloader(plugin), "anti_wdl.enabled");
         registerModule(new DoubleJump(plugin), "double_jump.enabled");
         registerModule(new Launchpad(plugin), "launchpad.enabled");
-        registerModule(new ScoreboardManager(plugin), "scoreboard.enabled");
-        registerModule(new TablistManager(plugin), "tablist.enabled");
         registerModule(new AutoBroadcast(plugin), "announcements.enabled");
         registerModule(new AntiSwear(plugin), "anti_swear.enabled");
         registerModule(new ChatCommandBlock(plugin), "command_block.enabled");
@@ -59,7 +56,6 @@ public class ModuleManager {
         registerModule(new WorldProtect(plugin));
         registerModule(new LobbySpawn(plugin));
         registerModule(new PlayerVanish(plugin));
-        registerModule(new HologramManager(plugin));
         registerModule(new CustomCommands(plugin));
 
         // Requires 1.9+

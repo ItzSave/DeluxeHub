@@ -10,8 +10,6 @@ import fun.lewisdev.deluxehub.cooldown.CooldownManager;
 import fun.lewisdev.deluxehub.hook.HooksManager;
 import fun.lewisdev.deluxehub.inventory.InventoryManager;
 import fun.lewisdev.deluxehub.module.ModuleManager;
-import fun.lewisdev.deluxehub.module.ModuleType;
-import fun.lewisdev.deluxehub.module.modules.hologram.HologramManager;
 import fun.lewisdev.deluxehub.utility.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -110,6 +108,7 @@ public class DeluxeHubPlugin extends JavaPlugin {
 
     /**
      * Registers all the various commands.
+     *
      * @param manager PaperCommandManager instance.
      */
     private void registerCommands(PaperCommandManager manager) {
@@ -137,10 +136,6 @@ public class DeluxeHubPlugin extends JavaPlugin {
         moduleManager.loadModules(this);
     }
 
-
-    public HologramManager getHologramManager() {
-        return (HologramManager) moduleManager.getModule(ModuleType.HOLOGRAMS);
-    }
 
     public HooksManager getHookManager() {
         return hooksManager;
