@@ -3,7 +3,7 @@ package fun.lewisdev.deluxehub;
 import co.aikar.commands.PaperCommandManager;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import fun.lewisdev.deluxehub.action.ActionManager;
-import fun.lewisdev.deluxehub.commands.DeluxeHubCommand;
+import fun.lewisdev.deluxehub.commands.impl.*;
 import fun.lewisdev.deluxehub.config.ConfigManager;
 import fun.lewisdev.deluxehub.config.ConfigType;
 import fun.lewisdev.deluxehub.cooldown.CooldownManager;
@@ -19,6 +19,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public class DeluxeHubPlugin extends JavaPlugin {
 
@@ -112,7 +113,14 @@ public class DeluxeHubPlugin extends JavaPlugin {
      * @param manager PaperCommandManager instance.
      */
     private void registerCommands(PaperCommandManager manager) {
-        manager.registerCommand(new DeluxeHubCommand(this));
+        Stream.of(
+                new DeluxeHubCommand(this),
+                new FlyCommand(),
+                new GamemodeCommand(),
+                new LockchatCommand(this),
+                new SetLobbyCommand(this),
+                new LobbyCommand(this)
+        ).forEach(manager::registerCommand);
     }
 
     public void reload() {

@@ -60,6 +60,7 @@ public class ModuleManager {
         registerModule(new LobbySpawn(plugin));
         registerModule(new PlayerVanish(plugin));
         registerModule(new HologramManager(plugin));
+        registerModule(new CustomCommands(plugin));
 
         // Requires 1.9+
         if (XMaterial.supports(9)) {

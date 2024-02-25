@@ -1,4 +1,4 @@
-package fun.lewisdev.deluxehub.commands;
+package fun.lewisdev.deluxehub.commands.impl;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;

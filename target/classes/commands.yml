@@ -21,3 +21,38 @@ custom_commands:
     actions:
       - '[CONSOLE] minecraft:clear %player%'
       - '[MESSAGE] &dDeluxeHub &eYour inventory has been cleared!'
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# | DELUXEHUB COMMANDS                       |
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# It's highly recommended to restart your server if you edit anything below
+
+commands:
+  gamemode:
+    enabled: true
+    aliases:
+      - gm
+  gms:
+    enabled: true
+  gmc:
+    enabled: true
+  gma:
+    enabled: true
+  gmsp:
+    enabled: true
+  clearchat:
+    enabled: true
+  fly:
+    enabled: true
+  lockchat:
+    enabled: true
+    aliases:
+      - lc
+  setlobby:
+    enabled: true
+  lobby:
+    enabled: true
+  vanish:
+    enabled: true
+    aliases:
+      - v
