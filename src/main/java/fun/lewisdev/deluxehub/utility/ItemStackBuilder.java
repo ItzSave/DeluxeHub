@@ -3,15 +3,13 @@ package fun.lewisdev.deluxehub.utility;
 import fun.lewisdev.deluxehub.DeluxeHubPlugin;
 import fun.lewisdev.deluxehub.hook.hooks.head.HeadHook;
 import fun.lewisdev.deluxehub.utility.universal.XMaterial;
-import org.bukkit.Color;
-import org.bukkit.Material;
+import net.zithium.library.utils.ColorUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
@@ -104,7 +102,7 @@ public class ItemStackBuilder {
             return this;
         }
 
-        meta.setDisplayName(TextUtil.color(name));
+        meta.setDisplayName(ColorUtil.color(name));
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
@@ -116,7 +114,7 @@ public class ItemStackBuilder {
             return this;
         }
 
-        meta.setDisplayName(TextUtil.color(PlaceholderUtil.setPlaceholders(name, player)));
+        meta.setDisplayName(ColorUtil.color(PlaceholderUtil.setPlaceholders(name, player)));
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
@@ -141,7 +139,7 @@ public class ItemStackBuilder {
         List<String> coloredLore = new ArrayList<String>();
         for (String s : lore) {
             s = PlaceholderUtil.setPlaceholders(s, player);
-            coloredLore.add(TextUtil.color(s));
+            coloredLore.add(ColorUtil.color(s));
         }
         meta.setLore(coloredLore);
         ITEM_STACK.setItemMeta(meta);
@@ -157,7 +155,7 @@ public class ItemStackBuilder {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
         List<String> coloredLore = new ArrayList<String>();
         for (String s : lore) {
-            coloredLore.add(TextUtil.color(s));
+            coloredLore.add(ColorUtil.color(s));
         }
         meta.setLore(coloredLore);
         ITEM_STACK.setItemMeta(meta);

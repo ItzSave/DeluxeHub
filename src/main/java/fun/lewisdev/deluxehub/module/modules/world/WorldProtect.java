@@ -8,7 +8,6 @@ import fun.lewisdev.deluxehub.config.Messages;
 import fun.lewisdev.deluxehub.cooldown.CooldownType;
 import fun.lewisdev.deluxehub.module.Module;
 import fun.lewisdev.deluxehub.module.ModuleType;
-import fun.lewisdev.deluxehub.module.modules.hologram.Hologram;
 import fun.lewisdev.deluxehub.utility.universal.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -131,18 +130,6 @@ public class WorldProtect extends Module {
 
     @Override
     public void onDisable() {
-    }
-
-    @EventHandler
-    public void onArmorStandInteract(PlayerArmorStandManipulateEvent event) {
-        for (Hologram entry : getPlugin().getHologramManager().getHolograms()) {
-            for (ArmorStand stand : entry.getStands()) {
-                if (stand.equals(event.getRightClicked())) {
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)

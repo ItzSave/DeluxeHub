@@ -2,9 +2,9 @@ package fun.lewisdev.deluxehub.action.actions;
 
 import fun.lewisdev.deluxehub.DeluxeHubPlugin;
 import fun.lewisdev.deluxehub.action.Action;
-import fun.lewisdev.deluxehub.utility.TextUtil;
 import fun.lewisdev.deluxehub.utility.reflection.Titles;
 import fun.lewisdev.deluxehub.utility.universal.XMaterial;
+import net.zithium.library.utils.ColorUtil;
 import org.bukkit.entity.Player;
 
 public class TitleAction implements Action {
@@ -18,8 +18,8 @@ public class TitleAction implements Action {
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
         String[] args = data.split(";");
 
-        String mainTitle = TextUtil.color(args[0]);
-        String subTitle = TextUtil.color(args[1]);
+        String mainTitle = ColorUtil.color(args[0]);
+        String subTitle = ColorUtil.color(args[1]);
 
         int fadeIn;
         int stay;

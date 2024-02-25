@@ -6,6 +6,8 @@ import fun.lewisdev.deluxehub.module.Module;
 import fun.lewisdev.deluxehub.module.ModuleType;
 import fun.lewisdev.deluxehub.utility.PlaceholderUtil;
 import fun.lewisdev.deluxehub.utility.TextUtil;
+import net.kyori.adventure.text.Component;
+import net.zithium.library.utils.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -89,10 +91,10 @@ public class PlayerListener extends Module {
 
         // Join message handling
         if (joinQuitMessagesEnabled) {
-            if (joinMessage.equals("")) event.setJoinMessage(null);
+            if (joinMessage.isEmpty()) event.joinMessage(null);
             else {
                 String message = PlaceholderUtil.setPlaceholders(joinMessage, player);
-                event.setJoinMessage(TextUtil.color(message));
+                event.joinMessage(Component.text(ColorUtil.color(message)));
             }
         }
 
@@ -130,10 +132,10 @@ public class PlayerListener extends Module {
         if (inDisabledWorld(player.getLocation())) return;
 
         if (joinQuitMessagesEnabled) {
-            if (quitMessage.equals("")) event.setQuitMessage(null);
+            if (quitMessage.isEmpty()) event.quitMessage(null);
             else {
                 String message = PlaceholderUtil.setPlaceholders(quitMessage, player);
-                event.setQuitMessage(TextUtil.color(message));
+                event.quitMessage(Component.text(ColorUtil.color(message)));
             }
         }
 

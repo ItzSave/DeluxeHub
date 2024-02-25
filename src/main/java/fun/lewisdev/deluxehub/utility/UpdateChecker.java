@@ -1,6 +1,7 @@
 package fun.lewisdev.deluxehub.utility;
 
 import fun.lewisdev.deluxehub.Permissions;
+import net.zithium.library.utils.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,8 +63,8 @@ public class UpdateChecker {
                         public void onPlayerJoin(final PlayerJoinEvent event) {
                             final Player player = event.getPlayer();
                             if (!player.hasPermission(UPDATE_PERM)) return;
-                            player.sendMessage(TextUtil.color("&7An update (v%VERSION%) for DeluxeHub is available at:".replace("%VERSION%", spigotPluginVersion)));
-                            player.sendMessage(TextUtil.color("&6https://www.spigotmc.org/resources/" + ID));
+                            player.sendMessage(ColorUtil.color("&7An update (v%VERSION%) for DeluxeHub is available at:".replace("%VERSION%", spigotPluginVersion)));
+                            player.sendMessage(ColorUtil.color("&6https://www.spigotmc.org/resources/" + ID));
                         }
                     }, plugin));
 

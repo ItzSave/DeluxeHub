@@ -1,15 +1,10 @@
 package fun.lewisdev.deluxehub.utility;
 
-import fun.lewisdev.deluxehub.utility.color.IridiumColorAPI;
 import org.bukkit.Color;
 
 import java.util.List;
 
 public class TextUtil {
-
-    public static String color(final String string) {
-        return IridiumColorAPI.process(string);
-    }
 
     public static String fromList(List<?> list) {
         if (list == null || list.isEmpty()) return null;

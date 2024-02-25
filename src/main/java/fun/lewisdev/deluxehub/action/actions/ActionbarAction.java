@@ -4,6 +4,7 @@ import fun.lewisdev.deluxehub.DeluxeHubPlugin;
 import fun.lewisdev.deluxehub.action.Action;
 import fun.lewisdev.deluxehub.utility.TextUtil;
 import fun.lewisdev.deluxehub.utility.reflection.ActionBar;
+import net.zithium.library.utils.ColorUtil;
 import org.bukkit.entity.Player;
 
 public class ActionbarAction implements Action {
@@ -15,6 +16,6 @@ public class ActionbarAction implements Action {
 
     @Override
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
-        ActionBar.sendActionBar(player, TextUtil.color(data));
+        ActionBar.sendActionBar(player, ColorUtil.color(data));
     }
 }
