@@ -46,6 +46,8 @@ public class AntiSwear extends Module {
             return;
         }
 
+		if (blockedWords == null)
+			return ;
         for (String word : blockedWords) {
             if (message.toLowerCase().contains(word.toLowerCase())) {
                 cancelAction.run();
