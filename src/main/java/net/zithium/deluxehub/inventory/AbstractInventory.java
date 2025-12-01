@@ -11,21 +11,21 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractInventory implements Listener {
 
     private final DeluxeHubPlugin plugin;
     private final PlatformScheduler scheduler;
     private boolean refreshEnabled = false;
-    private final List<UUID> openInventories;
+    private final Set<UUID> openInventories = ConcurrentHashMap.newKeySet();
 
     public AbstractInventory(DeluxeHubPlugin plugin) {
         this.plugin = plugin;
         this.scheduler = DeluxeHubPlugin.scheduler();
-        openInventories = new ArrayList<>();
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
@@ -74,12 +74,12 @@ public abstract class AbstractInventory implements Listener {
         }
 
         scheduler.runAtEntity(player, task -> player.openInventory(refreshInventory(player, getInventory())));
-        if (refreshEnabled && !openInventories.contains(player.getUniqueId())) {
+        if (refreshEnabled) {
             openInventories.add(player.getUniqueId());
         }
     }
 
-    public List<UUID> getOpenInventories() {
+    public Collection<UUID> getOpenInventories() {
         return openInventories;
     }
 
