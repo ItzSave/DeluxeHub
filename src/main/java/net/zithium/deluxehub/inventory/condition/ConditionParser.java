@@ -55,11 +55,18 @@ public class ConditionParser {
      * @return true if condition is met, false otherwise
      */
     private static boolean evaluate(String condition, Player player) {
+        // Store original condition for debugging
+        String originalCondition = condition;
+
         // Replace placeholders first
         condition = PlaceholderUtil.setPlaceholders(condition, player);
 
         // Handle brackets first (single depth)
-        while (condition.contains("(")) {
+        // Note: This replaces bracket groups with their boolean result to avoid
+        // confusion with literal parentheses that might appear in placeholder values
+        int maxIterations = 100; // Safety limit to prevent infinite loops
+        int iterations = 0;
+        while (condition.contains("(") && iterations < maxIterations) {
             Matcher matcher = BRACKET_PATTERN.matcher(condition);
             if (!matcher.find()) {
                 break; // No valid brackets found
@@ -67,7 +74,12 @@ public class ConditionParser {
 
             String bracketContent = matcher.group(1);
             boolean bracketResult = evaluate(bracketContent, player);
-            condition = condition.replace("(" + bracketContent + ")", String.valueOf(bracketResult));
+
+            // Use a unique placeholder to avoid conflicts with literal parentheses
+            String placeholder = "##BRACKET_RESULT_" + iterations + "##";
+            condition = matcher.replaceFirst(placeholder);
+            condition = condition.replace(placeholder, String.valueOf(bracketResult));
+            iterations++;
         }
 
         // Handle OR (lower precedence)
@@ -195,6 +207,10 @@ public class ConditionParser {
                 double right = Double.parseDouble(parts[1].trim());
                 return left >= right;
             } catch (NumberFormatException e) {
+                // Debug: Log failed parsing to help identify placeholder issues
+                if (parts[0].trim().contains("%")) {
+                    System.out.println("[DeluxeHub] Failed to parse condition - placeholder not replaced: " + parts[0].trim());
+                }
                 return false;
             }
         }
@@ -209,6 +225,9 @@ public class ConditionParser {
                 double right = Double.parseDouble(parts[1].trim());
                 return left <= right;
             } catch (NumberFormatException e) {
+                if (parts[0].trim().contains("%")) {
+                    System.out.println("[DeluxeHub] Failed to parse condition - placeholder not replaced: " + parts[0].trim());
+                }
                 return false;
             }
         }
@@ -223,6 +242,9 @@ public class ConditionParser {
                 double right = Double.parseDouble(parts[1].trim());
                 return left > right;
             } catch (NumberFormatException e) {
+                if (parts[0].trim().contains("%")) {
+                    System.out.println("[DeluxeHub] Failed to parse condition - placeholder not replaced: " + parts[0].trim());
+                }
                 return false;
             }
         }
@@ -237,11 +259,22 @@ public class ConditionParser {
                 double right = Double.parseDouble(parts[1].trim());
                 return left < right;
             } catch (NumberFormatException e) {
+                if (parts[0].trim().contains("%")) {
+                    System.out.println("[DeluxeHub] Failed to parse condition - placeholder not replaced: " + parts[0].trim());
+                }
                 return false;
             }
         }
 
         // No valid operator found - treat as boolean permission check for backwards compatibility
+        // Log warning if this might be a typo (contains common operator keywords)
+        String upperCondition = condition.toUpperCase();
+        if (upperCondition.contains("EQUAL") || upperCondition.contains("THAN") ||
+            upperCondition.contains("LEAST") || upperCondition.contains("MOST") ||
+            upperCondition.contains("CONTAIN") || upperCondition.contains("START") ||
+            upperCondition.contains("END") || upperCondition.contains("MATCH")) {
+            System.out.println("[DeluxeHub] Warning: Unrecognized condition operator in: '" + condition + "'. Treating as permission check. Check for typos!");
+        }
         return player.hasPermission(condition);
     }
 

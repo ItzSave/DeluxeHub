@@ -67,8 +67,8 @@ public class TablistHelper {
         Objects.requireNonNull(player, "Cannot set player list name for null player");
 
         if (name == null || name.isEmpty()) {
-            // Reset to default (player's display name)
-            player.setPlayerListName(player.getName());
+            // Reset to Bukkit default (may restore custom display name)
+            player.setPlayerListName(null);
         } else {
             // Set custom name with color codes
             String formattedName = ColorUtil.color(name);

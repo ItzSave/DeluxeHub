@@ -220,7 +220,7 @@ items:
       - "&7For players under level 5"
       - ""
       - "&aYour level: &e%player_level%"
-    conditions: "NOT %player_level% ATLEAST 5"
+    conditions: "%player_level% LESSTHAN 5"
     actions:
       - "[MESSAGE] &7Welcome, new player!"
 

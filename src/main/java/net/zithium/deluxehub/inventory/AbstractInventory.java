@@ -46,6 +46,11 @@ public abstract class AbstractInventory implements Listener {
         return plugin;
     }
 
+    /**
+     * Refreshes placeholders in the provided inventory for the given player.
+     * Uses the passed inventory parameter (which may be player-specific via getInventory(player))
+     * rather than getInventory() to ensure player-specific items are refreshed correctly.
+     */
     public Inventory refreshInventory(Player player, Inventory inventory) {
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack item = inventory.getItem(i);

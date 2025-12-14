@@ -87,6 +87,6 @@ public class InventoryItem {
      * @return true if the item should be visible, false otherwise
      */
     public boolean isVisibleFor(final Player player) {
-        return this.condition == null || this.condition.evaluate(player);
+        return this.condition.evaluate(player);
     }
 }
