@@ -27,6 +27,14 @@
 #
 # ITEM ACTIONS
 #   All item actions can be found here https://wiki.lewisdev.fun/free-resources/deluxehub/action-types
+#
+# MINIMESSAGE SUPPORT
+#   You can use MiniMessage formatting for gradients and advanced formatting!
+#   Examples:
+#     Gradient: <gradient:#ff0000:#00ff00>Gradient Text</gradient>
+#     Rainbow: <rainbow>Rainbow Text</rainbow>
+#     Hover: <hover:show_text:'Hover text here'>Text</hover>
+#     More info: https://docs.advntr.dev/minimessage/format.html
 
 # Slots of the GUI
 slots: 27
@@ -54,6 +62,10 @@ items:
     lore:
       - '&7Join now!'
       - '&aPlaceholderAPI support!'
+      - ''
+      - '&7You can also use MiniMessage:'
+      - '<gradient:#ff0000:#00ff00>Gradient text!</gradient>'
+      - '<rainbow>Rainbow text!</rainbow>'
     actions:
       - '[CLOSE]'
       - '[MESSAGE] &7Sending you to: &eFactions'
@@ -69,6 +81,9 @@ items:
     lore:
       - '&7Join now!'
       - '&aMulti lore support too!'
+      - ''
+      - '<gradient:#55ff55:#55ffff>&lGradient example</gradient>'
+      - '<rainbow:!><b>Bold rainbow text!</b></rainbow>'
     actions:
       - '[CLOSE]'
       - '[MESSAGE] &7Sending you to: &eSurvival'

@@ -1,0 +1,374 @@
+# Conditional Menu Example
+# This example demonstrates the powerful conditions system for controlling item visibility
+#
+# CONDITION SYNTAX:
+#   Conditions control when items are visible or accessible in the menu.
+#   They support PlaceholderAPI placeholders and various operators.
+#
+# PERMISSION OPERATORS:
+#   - HASPERM: Checks if player has a permission
+#     Example: "HASPERM deluxehub.vip"
+#
+#   - NOTHASPERM: Checks if player does NOT have a permission
+#     Example: "NOTHASPERM deluxehub.banned"
+#
+# STRING OPERATORS:
+#   - EQUALS: Checks if two values are equal (case-sensitive)
+#     Example: "%player_name% EQUALS Notch"
+#
+#   - EQUALSIGNORECASE: Checks if two values are equal (case-insensitive)
+#     Example: "%player_world% EQUALSIGNORECASE LOBBY"
+#
+#   - NOTEQUALS: Checks if two values are NOT equal (case-insensitive)
+#     Example: "%player_gamemode% NOTEQUALS SPECTATOR"
+#
+#   - CONTAINS: Checks if first value contains second value
+#     Example: "%player_world% CONTAINS spawn"
+#
+#   - STARTSWITH: Checks if value starts with text
+#     Example: "%player_name% STARTSWITH Admin"
+#
+#   - ENDSWITH: Checks if value ends with text
+#     Example: "%player_world% ENDSWITH _nether"
+#
+#   - MATCHES: Checks if value matches regex pattern
+#     Example: "%player_name% MATCHES ^[A-Z].*"
+#
+# NUMERIC OPERATORS:
+#   - ATLEAST: Number is greater than or equal (>=)
+#     Example: "%player_level% ATLEAST 10"
+#
+#   - ATMOST: Number is less than or equal (<=)
+#     Example: "%player_health% ATMOST 5"
+#
+#   - GREATERTHAN: Number is strictly greater than (>)
+#     Example: "%vault_eco_balance% GREATERTHAN 1000"
+#
+#   - LESSTHAN: Number is strictly less than (<)
+#     Example: "%player_food_level% LESSTHAN 10"
+#
+# LOGICAL OPERATORS:
+#   - AND: Both conditions must be true
+#     Example: "HASPERM deluxehub.vip AND %player_level% ATLEAST 5"
+#
+#   - OR: At least one condition must be true
+#     Example: "HASPERM deluxehub.vip OR HASPERM deluxehub.admin"
+#
+#   - NOT: Inverts the condition
+#     Example: "NOT HASPERM deluxehub.banned"
+#
+# GROUPING:
+#   - Use brackets () for single-depth grouping
+#     Example: "(%player_name% EQUALS Notch) OR (HASPERM deluxehub.admin)"
+#     Example: "(HASPERM deluxehub.vip AND %player_level% ATLEAST 10) OR HASPERM deluxehub.admin"
+#
+# MULTIPLE CONDITIONS:
+#   You can use a list for multiple conditions (all must be true - AND logic)
+#   conditions:
+#     - "HASPERM deluxehub.access"
+#     - "%player_level% ATLEAST 5"
+#
+# NOTE: Conditions are parsed left to right. Spacing is important!
+
+slots: 54
+title: "&6&lConditional Menu"
+
+refresh:
+  enabled: true
+  rate: 40
+
+items:
+  # Background filler
+  filler:
+    material: GRAY_STAINED_GLASS_PANE
+    display_name: " "
+    slot: -1
+
+  # Item visible only to VIP players
+  vip_item:
+    material: DIAMOND
+    slot: 10
+    display_name: "&b&lVIP Item"
+    lore:
+      - "&7This item is only visible"
+      - "&7to players with VIP permission!"
+      - ""
+      - "&aYou have VIP access!"
+    conditions: "HASPERM deluxehub.vip"
+    actions:
+      - "[MESSAGE] &aYou clicked the VIP item!"
+
+  # Item visible to players with level 10 or higher
+  level_requirement:
+    material: EXPERIENCE_BOTTLE
+    slot: 12
+    display_name: "&e&lLevel 10+ Item"
+    lore:
+      - "&7Requires level 10 or higher"
+      - ""
+      - "&aYour level: &e%player_level%"
+    conditions: "%player_level% ATLEAST 10"
+    actions:
+      - "[MESSAGE] &aYou meet the level requirement!"
+
+  # Item visible to specific player
+  special_player:
+    material: PLAYER_HEAD
+    username: Notch
+    slot: 14
+    display_name: "&d&lNotch's Special Item"
+    lore:
+      - "&7This item is only for Notch!"
+      - ""
+      - "&aWelcome, Notch!"
+    conditions: "%player_name% EQUALS Notch"
+    actions:
+      - "[MESSAGE] &dWelcome, Notch!"
+
+  # Item visible to VIP or Admin
+  vip_or_admin:
+    material: EMERALD
+    slot: 16
+    display_name: "&a&lVIP or Admin Item"
+    lore:
+      - "&7Visible to VIP or Admin players"
+      - ""
+      - "&aYou have access!"
+    conditions: "HASPERM deluxehub.vip OR HASPERM deluxehub.admin"
+    actions:
+      - "[MESSAGE] &aYou have VIP or Admin access!"
+
+  # Item with multiple conditions (all must be true)
+  multi_condition:
+    material: NETHER_STAR
+    slot: 20
+    display_name: "&6&lMulti-Condition Item"
+    lore:
+      - "&7Requires:"
+      - "&e- VIP permission"
+      - "&e- Level 5 or higher"
+      - ""
+      - "&aYou meet all requirements!"
+    conditions:
+      - "HASPERM deluxehub.vip"
+      - "%player_level% ATLEAST 5"
+    actions:
+      - "[MESSAGE] &6You meet all the requirements!"
+
+  # Item with complex grouped conditions
+  complex_condition:
+    material: ENCHANTED_GOLDEN_APPLE
+    slot: 22
+    display_name: "&c&lComplex Condition Item"
+    lore:
+      - "&7Visible if:"
+      - "&e- (VIP AND level 10+) OR"
+      - "&e- Admin permission"
+      - ""
+      - "&aYou have access!"
+    conditions: "(HASPERM deluxehub.vip AND %player_level% ATLEAST 10) OR HASPERM deluxehub.admin"
+    actions:
+      - "[MESSAGE] &cYou meet the complex requirements!"
+
+  # Item with NOT condition
+  not_banned:
+    material: GREEN_WOOL
+    slot: 24
+    display_name: "&a&lNon-Banned Item"
+    lore:
+      - "&7Visible to players who"
+      - "&7are NOT banned"
+      - ""
+      - "&aYou're not banned!"
+    conditions: "NOT HASPERM deluxehub.banned"
+    actions:
+      - "[MESSAGE] &aYou are not banned!"
+
+  # Item checking online player count
+  high_players:
+    material: PLAYER_HEAD
+    base64: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDhhZTc0ZjhmZTM1MTU0OGQ1ZjM1MGE4MTI4ZDM0NmVhNmU5M2QyNjFlMmVlZjQzYzI0YTc2NTMxYzk1In19fQ==
+    slot: 28
+    display_name: "&e&lPeak Hours Item"
+    lore:
+      - "&7Visible when 10+ players online"
+      - ""
+      - "&aCurrent: &e%online% &aplayers"
+    conditions: "%online% ATLEAST 10"
+    actions:
+      - "[MESSAGE] &eThere are %online% players online!"
+
+  # Item using PlaceholderAPI expansions (example with Vault balance)
+  rich_player:
+    material: GOLD_INGOT
+    slot: 30
+    display_name: "&6&lRich Player Item"
+    lore:
+      - "&7Requires $1000 or more"
+      - ""
+      - "&aYour balance: &e$%vault_eco_balance%"
+    conditions: "%vault_eco_balance% ATLEAST 1000"
+    actions:
+      - "[MESSAGE] &6You're rich! Balance: $%vault_eco_balance%"
+
+  # Item for new players (opposite of level requirement)
+  newbie_item:
+    material: WOODEN_SWORD
+    slot: 32
+    display_name: "&7&lNew Player Item"
+    lore:
+      - "&7For players under level 5"
+      - ""
+      - "&aYour level: &e%player_level%"
+    conditions: "%player_level% LESSTHAN 5"
+    actions:
+      - "[MESSAGE] &7Welcome, new player!"
+
+  # Item visible to everyone (no conditions)
+  always_visible:
+    material: COMPASS
+    slot: 40
+    display_name: "&b&lAlways Visible"
+    lore:
+      - "&7This item is visible to everyone!"
+      - ""
+      - "&eClick to get info"
+    actions:
+      - "[MESSAGE] &bThis item has no conditions!"
+      - "[MESSAGE] &bYour name: &e%player_name%"
+      - "[MESSAGE] &bYour level: &e%player_level%"
+      - "[MESSAGE] &bOnline: &e%online%/%online_max%"
+
+  # Item using NOTEQUALS operator
+  not_spectator:
+    material: ENDER_PEARL
+    slot: 34
+    display_name: "&5&lNon-Spectator Item"
+    lore:
+      - "&7Only visible when NOT in spectator mode"
+      - ""
+      - "&aYour gamemode: &e%player_gamemode%"
+    conditions: "%player_gamemode% NOTEQUALS SPECTATOR"
+    actions:
+      - "[MESSAGE] &5You are not a spectator!"
+
+  # Item using CONTAINS operator
+  lobby_world:
+    material: BEACON
+    slot: 36
+    display_name: "&e&lLobby World Item"
+    lore:
+      - "&7Only visible in worlds containing 'lobby'"
+      - ""
+      - "&aCurrent world: &e%player_world%"
+    conditions: "%player_world% CONTAINS lobby"
+    actions:
+      - "[MESSAGE] &eYou are in a lobby world!"
+
+  # Item using STARTSWITH operator
+  admin_name:
+    material: COMMAND_BLOCK
+    slot: 38
+    display_name: "&c&lAdmin Name Item"
+    lore:
+      - "&7Only for players whose name"
+      - "&7starts with 'Admin'"
+      - ""
+      - "&aYour name: &e%player_name%"
+    conditions: "%player_name% STARTSWITH Admin"
+    actions:
+      - "[MESSAGE] &cYour name starts with Admin!"
+
+  # Item using ENDSWITH operator
+  nether_world:
+    material: NETHERRACK
+    slot: 42
+    display_name: "&4&lNether World Item"
+    lore:
+      - "&7Only visible in nether worlds"
+      - "&7(worlds ending with '_nether')"
+      - ""
+      - "&aCurrent world: &e%player_world%"
+    conditions: "%player_world% ENDSWITH _nether"
+    actions:
+      - "[MESSAGE] &4You are in the nether!"
+
+  # Item using ATMOST operator
+  low_health:
+    material: RED_DYE
+    slot: 44
+    display_name: "&c&lLow Health Warning"
+    lore:
+      - "&7Visible when health is 5 or below"
+      - ""
+      - "&cHealth: &4%player_health%/20"
+      - "&cBe careful!"
+    conditions: "%player_health% ATMOST 5"
+    actions:
+      - "[MESSAGE] &c&lWARNING: Your health is low!"
+      - "[SOUND] ENTITY_WITHER_HURT"
+
+  # Item using GREATERTHAN operator
+  very_rich:
+    material: DIAMOND_BLOCK
+    slot: 46
+    display_name: "&b&lMillionaire Item"
+    lore:
+      - "&7For players with MORE than $10,000"
+      - ""
+      - "&aBalance: &e$%vault_eco_balance%"
+    conditions: "%vault_eco_balance% GREATERTHAN 10000"
+    actions:
+      - "[MESSAGE] &bYou're a millionaire!"
+
+  # Item using LESSTHAN operator
+  hungry_player:
+    material: COOKED_BEEF
+    slot: 48
+    display_name: "&6&lHungry Player"
+    lore:
+      - "&7Visible when food level is below 10"
+      - ""
+      - "&eFood: &6%player_food_level%/20"
+      - "&eTime to eat!"
+    conditions: "%player_food_level% LESSTHAN 10"
+    actions:
+      - "[MESSAGE] &6You're hungry! Your food level is %player_food_level%"
+
+  # Item using NOTHASPERM operator
+  non_vip_item:
+    material: IRON_INGOT
+    slot: 50
+    display_name: "&7&lNon-VIP Item"
+    lore:
+      - "&7For players without VIP"
+      - ""
+      - "&eUpgrade to VIP for benefits!"
+    conditions: "NOTHASPERM deluxehub.vip"
+    actions:
+      - "[MESSAGE] &7Upgrade to VIP at our store!"
+
+  # Item using MATCHES regex operator
+  special_names:
+    material: NAME_TAG
+    slot: 52
+    display_name: "&d&lSpecial Names Only"
+    lore:
+      - "&7For players whose name starts"
+      - "&7with A, B, or C (case-insensitive)"
+      - ""
+      - "&aYour name: &e%player_name%"
+    conditions: "%player_name% MATCHES ^[AaBbCc].*"
+    actions:
+      - "[MESSAGE] &dYour name starts with A, B, or C!"
+
+  # Close button
+  close:
+    material: BARRIER
+    slot: 53
+    display_name: "&c&lClose Menu"
+    lore:
+      - "&7Click to close this menu"
+    actions:
+      - "[CLOSE]"
+

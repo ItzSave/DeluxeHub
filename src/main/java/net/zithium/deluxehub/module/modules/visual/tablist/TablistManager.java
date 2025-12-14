@@ -26,6 +26,8 @@ public class TablistManager extends Module {
     private WrappedTask tablistTask;
 
     private String header, footer;
+    private boolean playerNameFormatEnabled;
+    private String playerNameFormat;
 
     public TablistManager(DeluxeHubPlugin plugin) {
         super(plugin, ModuleType.TABLIST);
@@ -39,6 +41,9 @@ public class TablistManager extends Module {
 
         header = String.join("\n", config.getStringList("tablist.header"));
         footer = String.join("\n", config.getStringList("tablist.footer"));
+
+        playerNameFormatEnabled = config.getBoolean("tablist.player_name_format.enabled", false);
+        playerNameFormat = config.getString("tablist.player_name_format.format", "%player%");
 
         if (config.getBoolean("tablist.refresh.enabled")) {
             tablistTask = scheduler.runTimer(new TablistUpdateTask(this), 1L, config.getLong("tablist.refresh.rate"));
@@ -76,6 +81,12 @@ public class TablistManager extends Module {
         }
 
         TablistHelper.sendTabList(player, PlaceholderUtil.setPlaceholders(header, player), PlaceholderUtil.setPlaceholders(footer, player));
+
+        // Update player name in tablist if enabled
+        if (playerNameFormatEnabled) {
+            TablistHelper.setPlayerListName(player, PlaceholderUtil.setPlaceholders(playerNameFormat, player));
+        }
+
         return true;
     }
 
@@ -83,11 +94,24 @@ public class TablistManager extends Module {
         if (players.contains(player.getUniqueId())) {
             players.remove(player.getUniqueId());
             TablistHelper.sendTabList(player, null, null);
+
+            // Reset player name in tablist if it was customized
+            if (playerNameFormatEnabled) {
+                TablistHelper.setPlayerListName(player, null);
+            }
         }
     }
 
     public List<UUID> getPlayers() {
         return players;
+    }
+
+    /**
+     * Updates all online players' tablists
+     * Useful for reloading configuration
+     */
+    public void updateAllPlayers() {
+        players.forEach(this::updateTablist);
     }
 
     @EventHandler

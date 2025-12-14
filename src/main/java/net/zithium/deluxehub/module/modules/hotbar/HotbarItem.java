@@ -32,6 +32,7 @@ public abstract class HotbarItem implements Listener {
     private String permission = null;
     private final int slot;
     private boolean allowMovement;
+    private boolean autoSelectOnJoin = false;
 
     public HotbarItem(HotbarManager hotbarManager, ItemStack item, int slot, String key) {
         this.scheduler = DeluxeHubPlugin.scheduler();
@@ -72,6 +73,14 @@ public abstract class HotbarItem implements Listener {
 
     public void setAllowMovement(boolean allowMovement) {
         this.allowMovement = allowMovement;
+    }
+
+    public void setAutoSelectOnJoin(boolean autoSelectOnJoin) {
+        this.autoSelectOnJoin = autoSelectOnJoin;
+    }
+
+    public boolean isAutoSelectOnJoin() {
+        return autoSelectOnJoin;
     }
 
     public String getPermission() {
@@ -155,6 +164,11 @@ public abstract class HotbarItem implements Listener {
         Player player = event.getPlayer();
         if (!getHotbarManager().inDisabledWorld(player.getLocation())) {
             giveItem(player);
+
+            // Auto-select the slot if enabled
+            if (autoSelectOnJoin && slot >= 0 && slot <= 8) {
+                scheduler.runLater(task -> player.getInventory().setHeldItemSlot(slot), 2L);
+            }
         }
     }
 

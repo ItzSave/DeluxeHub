@@ -39,6 +39,12 @@ public class HotbarManager extends Module {
 
                 customItem.setConfigurationSection(config.getConfigurationSection("custom_join_items.items." + entry));
                 customItem.setAllowMovement(config.getBoolean("custom_join_items.disable_inventory_movement"));
+
+                // Check if this specific item should be auto-selected on join
+                if (config.contains("custom_join_items.items." + entry + ".auto_select_on_join")) {
+                    customItem.setAutoSelectOnJoin(config.getBoolean("custom_join_items.items." + entry + ".auto_select_on_join"));
+                }
+
                 registerHotbarItem(customItem);
             }
         }
