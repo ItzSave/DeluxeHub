@@ -69,17 +69,33 @@ public class InventoryManager {
                 return;
             }
 
-            File file = new File(directory, "serverselector.yml");
-            if (!file.exists()) {
+            // Copy default server selector menu
+            File serverSelectorFile = new File(directory, "serverselector.yml");
+            if (!serverSelectorFile.exists()) {
                 try (InputStream inputStream = this.plugin.getResource("serverselector.yml")) {
                     if (inputStream != null) {
-                        Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        Files.copy(inputStream, serverSelectorFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                         plugin.getLogger().info("Created default serverselector.yml menu.");
                     } else {
                         plugin.getLogger().warning("Resource 'serverselector.yml' not found.");
                     }
                 } catch (IOException e) {
                     plugin.getLogger().log(Level.SEVERE, "Failed to copy serverselector.yml to menus directory", e);
+                }
+            }
+
+            // Copy conditional menu example
+            File conditionalExampleFile = new File(directory, "conditional-menu-example.yml");
+            if (!conditionalExampleFile.exists()) {
+                try (InputStream inputStream = this.plugin.getResource("conditional-menu-example.yml")) {
+                    if (inputStream != null) {
+                        Files.copy(inputStream, conditionalExampleFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        plugin.getLogger().info("Created conditional-menu-example.yml menu.");
+                    } else {
+                        plugin.getLogger().warning("Resource 'conditional-menu-example.yml' not found.");
+                    }
+                } catch (IOException e) {
+                    plugin.getLogger().log(Level.SEVERE, "Failed to copy conditional-menu-example.yml to menus directory", e);
                 }
             }
         }

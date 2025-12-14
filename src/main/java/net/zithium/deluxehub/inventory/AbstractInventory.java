@@ -48,7 +48,7 @@ public abstract class AbstractInventory implements Listener {
 
     public Inventory refreshInventory(Player player, Inventory inventory) {
         for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack item = getInventory().getItem(i);
+            ItemStack item = inventory.getItem(i);
             if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) {
                 continue;
             }
@@ -68,12 +68,23 @@ public abstract class AbstractInventory implements Listener {
         return inventory;
     }
 
+    /**
+     * Gets a player-specific inventory that respects conditions.
+     * Override this to provide player-specific inventory generation.
+     *
+     * @param player The player to get the inventory for
+     * @return The player-specific inventory, or default inventory if not overridden
+     */
+    protected Inventory getInventory(Player player) {
+        return getInventory();
+    }
+
     public void openInventory(Player player) {
         if (getInventory() == null) {
             return;
         }
 
-        scheduler.runAtEntity(player, task -> player.openInventory(refreshInventory(player, getInventory())));
+        scheduler.runAtEntity(player, task -> player.openInventory(refreshInventory(player, getInventory(player))));
         if (refreshEnabled && !openInventories.contains(player.getUniqueId())) {
             openInventories.add(player.getUniqueId());
         }

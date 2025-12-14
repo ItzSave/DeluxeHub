@@ -128,7 +128,7 @@ tablist:
   # Set enabled to false to disable player name formatting
   player_name_format:
     enabled: true
-    format: "%luckperms_prefix%%player% &7(%player_ping%ms)"
+    format: "%luckperms_prefix% %player% &7(%player_ping%ms)"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # | AUTO BROADCAST                           |

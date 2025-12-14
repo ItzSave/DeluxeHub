@@ -4,6 +4,7 @@ import net.zithium.deluxehub.DeluxeHubPlugin;
 import net.zithium.deluxehub.inventory.AbstractInventory;
 import net.zithium.deluxehub.inventory.InventoryBuilder;
 import net.zithium.deluxehub.inventory.InventoryItem;
+import net.zithium.deluxehub.inventory.condition.ConditionParser;
 import net.zithium.deluxehub.utility.ItemStackBuilder;
 import net.zithium.library.utils.ColorUtil;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -42,6 +43,15 @@ public class CustomGUI extends AbstractInventory {
                     inventoryItem = new InventoryItem(builder.build()).addClickAction(p -> getPlugin().getActionManager().executeActions(p, config.getStringList("items." + entry + ".actions")));
                 }
 
+                // Parse and apply conditions if they exist
+                if (config.contains("items." + entry + ".conditions")) {
+                    if (config.isList("items." + entry + ".conditions")) {
+                        inventoryItem.setCondition(ConditionParser.parseMultiple(config.getStringList("items." + entry + ".conditions")));
+                    } else {
+                        inventoryItem.setCondition(ConditionParser.parse(config.getString("items." + entry + ".conditions")));
+                    }
+                }
+
                 if (config.contains("items." + entry + ".slots")) {
                     for (String slot : config.getStringList("items." + entry + ".slots")) {
                         inventoryBuilder.setItem(Integer.parseInt(slot), inventoryItem);
@@ -65,5 +75,10 @@ public class CustomGUI extends AbstractInventory {
     @Override
     protected Inventory getInventory() {
         return inventory.getInventory();
+    }
+
+    @Override
+    protected Inventory getInventory(org.bukkit.entity.Player player) {
+        return inventory.getInventory(player);
     }
 }
