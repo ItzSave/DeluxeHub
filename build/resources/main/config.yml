@@ -123,6 +123,13 @@ tablist:
     - "&e&lStore &fbuy.examplemc.net"
     - ""
 
+  # Customize player names in the tablist
+  # Use placeholders like %luckperms_prefix%, %player%, %player_ping%, etc.
+  # Set enabled to false to disable player name formatting
+  player_name_format:
+    enabled: true
+    format: "%luckperms_prefix%%player% &7(%player_ping%ms)"
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # | AUTO BROADCAST                           |
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -348,6 +355,8 @@ custom_join_items:
       display_name: "&eServer Selector"
       lore:
         - "&7Right-click to open the server selector!"
+      # Should this item's slot be auto-selected when the player joins?
+      auto_select_on_join: false
       actions:
         - "[MENU] serverselector"
 

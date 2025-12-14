@@ -57,4 +57,22 @@ public class TablistHelper {
             PLUGIN.getLogger().log(Level.SEVERE, "Failed to send tablist header/footer to player " + player.getName(), ex);
         }
     }
+
+    /**
+     * Sets a custom player list name for the player in the tablist
+     * @param player The player to set the name for
+     * @param name The custom name to display (null to reset to default)
+     */
+    public static void setPlayerListName(Player player, String name) {
+        Objects.requireNonNull(player, "Cannot set player list name for null player");
+
+        if (name == null || name.isEmpty()) {
+            // Reset to default (player's display name)
+            player.setPlayerListName(player.getName());
+        } else {
+            // Set custom name with color codes
+            String formattedName = ColorUtil.color(name);
+            player.setPlayerListName(formattedName);
+        }
+    }
 }
