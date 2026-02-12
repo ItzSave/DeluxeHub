@@ -1,6 +1,7 @@
 package net.zithium.deluxehub.module.modules.hotbar;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.reflection.XReflection;
 import com.tcoded.folialib.impl.PlatformScheduler;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.zithium.deluxehub.DeluxeHubPlugin;
@@ -132,7 +133,7 @@ public abstract class HotbarItem implements Listener {
     @EventHandler
     public void hotbarItemInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (XMaterial.supports(9) && event.getHand() != EquipmentSlot.HAND) {
+        if (XReflection.supports(9) && event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 

@@ -20,9 +20,18 @@ import java.util.List;
 public class AntiSwear extends Module {
 
     private List<String> blockedWords;
+    private final DeluxeHubPlugin plugin;
 
     public AntiSwear(DeluxeHubPlugin plugin) {
         super(plugin, ModuleType.ANTI_SWEAR);
+        this.plugin = plugin;
+
+
+    }
+
+    @Override
+    public void onEnable() {
+        blockedWords = getConfig(ConfigType.SETTINGS).getStringList("anti_swear.blocked_words");
 
         try {
             Class.forName("io.papermc.paper.event.player.AsyncChatEvent", false, plugin.getClass().getClassLoader());
@@ -30,11 +39,6 @@ public class AntiSwear extends Module {
         } catch (ClassNotFoundException ignored) {
             plugin.getServer().getPluginManager().registerEvents(new SpigotHandler(plugin, this), plugin);
         }
-    }
-
-    @Override
-    public void onEnable() {
-        blockedWords = getConfig(ConfigType.SETTINGS).getStringList("anti_swear.blocked_words");
     }
 
     @Override

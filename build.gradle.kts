@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.zithium"
-version = "3.7.1"
+version = "3.7.3"
 description = "DeluxeHub"
 
 repositories {
@@ -25,7 +25,7 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.2")
     implementation("com.github.BGMP.CommandFramework:command-framework-bukkit:master")
     implementation("com.tcoded:FoliaLib:0.5.1")
-    implementation("de.tr7zw:item-nbt-api:2.15.3") // UPDATE THIS FOR EACH NEW MC VERSION
+    implementation("de.tr7zw:item-nbt-api:2.15.5") // UPDATE THIS FOR EACH NEW MC VERSION
     implementation("org.bstats:bstats-bukkit-lite:1.7")
     implementation("com.github.shynixn.headdatabase:hdb-api:1.0")
     implementation("com.github.ItzSave:ZithiumLibrary:1f5182b77f")
@@ -34,6 +34,10 @@ dependencies {
     compileOnly("net.md-5:bungeecord-chat:1.16-R0.1")
     compileOnly("com.mojang:authlib:1.5.21")
     compileOnly("me.clip:placeholderapi:2.11.6")
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 tasks {

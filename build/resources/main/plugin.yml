@@ -1,8 +1,8 @@
 name: 'DeluxeHub'
 authors: [ ItzSave, ItsLewizzz ]
-version: '3.7.0'
+version: '3.7.3'
 description: "The ultimate all in one hub solution."
-api-version: 1.20
+api-version: 1.19
 main: net.zithium.deluxehub.DeluxeHubPlugin
 folia-supported: true
 loadbefore: [Essentials]
