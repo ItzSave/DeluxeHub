@@ -7,7 +7,7 @@ import net.zithium.deluxehub.DeluxeHubPlugin;
 import net.zithium.deluxehub.config.ConfigType;
 import net.zithium.deluxehub.module.Module;
 import net.zithium.deluxehub.module.ModuleType;
-import net.zithium.library.utils.ColorUtil;
+import net.zithium.deluxehub.utility.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,7 +46,7 @@ public class AutoBroadcast extends Module implements Runnable {
         }
 
         if (config.getBoolean("announcements.sound.enabled")) {
-            sound = XSound.matchXSound(config.getString("announcements.sound.value")).get().parseSound();
+            sound = XSound.of(config.getString("announcements.sound.value")).get().get();
             volume = config.getDouble("announcements.sound.volume");
             pitch = config.getDouble("announcements.sound.pitch");
         }
@@ -78,7 +78,7 @@ public class AutoBroadcast extends Module implements Runnable {
                     continue;
                 }
 
-                broadcasts.get(count).forEach(message -> player.sendMessage(ColorUtil.color(message)));
+                broadcasts.get(count).forEach(message -> player.sendMessage(TextUtil.color(message)));
 
                 if (sound != null) {
                     player.playSound(player.getLocation(), sound, (float) volume, (float) pitch);

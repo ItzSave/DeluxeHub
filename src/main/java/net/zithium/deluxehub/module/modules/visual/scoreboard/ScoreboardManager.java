@@ -15,12 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ScoreboardManager extends Module {
@@ -76,9 +71,7 @@ public class ScoreboardManager extends Module {
     }
 
     public void createScoreboard(Player player) {
-        if (toggledPlayers.contains(player.getUniqueId())) {
-            return;
-        }
+        if (toggledPlayers.contains(player.getUniqueId())) return;
 
         scheduler.runAtEntity(player, task -> {
             try {
@@ -94,13 +87,9 @@ public class ScoreboardManager extends Module {
 
     public ScoreHelper updateScoreboard(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
-        if (player == null) {
-            return null;
-        }
+        if (player == null) return null;
 
-        if (toggledPlayers.contains(uuid)) {
-            return players.get(uuid);
-        }
+        if (toggledPlayers.contains(uuid)) return players.get(uuid);
 
         ScoreHelper helper = players.get(uuid);
         if (helper == null) {
@@ -167,14 +156,9 @@ public class ScoreboardManager extends Module {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onWorldChange(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        
-        if (event.getTo().getWorld() == null) {
-            return;
-        }
 
-        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
-            return;
-        }
+        if (event.getTo().getWorld() == null) return;
+        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) return;
 
         if (inDisabledWorld(event.getTo()) && players.containsKey(player.getUniqueId())) {
             removeScoreboard(player);

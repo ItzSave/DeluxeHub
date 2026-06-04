@@ -1,6 +1,7 @@
 package net.zithium.deluxehub.module.modules.world;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.reflection.XReflection;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.zithium.deluxehub.DeluxeHubPlugin;
@@ -20,7 +21,7 @@ public class AntiWorldDownloader extends Module implements PluginMessageListener
 
     public AntiWorldDownloader(DeluxeHubPlugin plugin) {
         super(plugin, ModuleType.ANTI_WDL);
-        this.legacy = !XMaterial.supports(13);
+        this.legacy = !XReflection.supports(13);
     }
 
     @Override

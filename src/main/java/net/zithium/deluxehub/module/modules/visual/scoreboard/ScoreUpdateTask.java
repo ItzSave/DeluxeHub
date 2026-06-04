@@ -1,6 +1,7 @@
 package net.zithium.deluxehub.module.modules.visual.scoreboard;
 
 import org.bukkit.Bukkit;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

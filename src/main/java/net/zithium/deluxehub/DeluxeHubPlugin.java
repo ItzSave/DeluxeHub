@@ -122,6 +122,15 @@ public class DeluxeHubPlugin extends JavaPlugin {
         }
     }
 
+    public boolean isPurpurEnviroment() {
+        try {
+            Class.forName("org.purpurmc.purpur.PurpurConfig");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
     public void onDisable() {
         scheduler.cancelAllTasks();
         moduleManager.unloadModules();

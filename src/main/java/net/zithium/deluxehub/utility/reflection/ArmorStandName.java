@@ -1,6 +1,6 @@
 package net.zithium.deluxehub.utility.reflection;
 
-import com.cryptomorin.xseries.XMaterial;
+import com.cryptomorin.xseries.reflection.XReflection;
 import net.zithium.deluxehub.DeluxeHubPlugin;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,7 +11,7 @@ public class ArmorStandName {
     private static final JavaPlugin PLUGIN = JavaPlugin.getProvidingPlugin(DeluxeHubPlugin.class);
 
     public static String getName(ArmorStand stand) {
-        if (XMaterial.supports(8)) {
+        if (XReflection.supports(8)) {
             return stand.getCustomName();
         }
 

@@ -1,21 +1,9 @@
 package net.zithium.deluxehub.action;
 
 import net.zithium.deluxehub.DeluxeHubPlugin;
-import net.zithium.deluxehub.action.actions.ActionbarAction;
-import net.zithium.deluxehub.action.actions.BroadcastMessageAction;
-import net.zithium.deluxehub.action.actions.BungeeAction;
-import net.zithium.deluxehub.action.actions.CloseInventoryAction;
-import net.zithium.deluxehub.action.actions.CommandAction;
-import net.zithium.deluxehub.action.actions.ConsoleCommandAction;
-import net.zithium.deluxehub.action.actions.GamemodeAction;
-import net.zithium.deluxehub.action.actions.MenuAction;
-import net.zithium.deluxehub.action.actions.MessageAction;
-import net.zithium.deluxehub.action.actions.PotionEffectAction;
-import net.zithium.deluxehub.action.actions.ProxyAction;
-import net.zithium.deluxehub.action.actions.SoundAction;
-import net.zithium.deluxehub.action.actions.TitleAction;
+import net.zithium.deluxehub.action.actions.*;
 import net.zithium.deluxehub.utility.PlaceholderUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -43,12 +31,12 @@ public class ActionManager {
                 new SoundAction(),
                 new PotionEffectAction(),
                 new GamemodeAction(),
-                new BungeeAction(),
                 new CloseInventoryAction(),
                 new ActionbarAction(),
                 new TitleAction(),
                 new MenuAction(),
-                new ProxyAction()
+                new ProxyAction(),
+                new DelayAction()
         );
     }
 
@@ -59,16 +47,32 @@ public class ActionManager {
     public void executeActions(Player player, List<String> items) {
         items.forEach(item -> {
             String actionName = StringUtils.substringBetween(item, "[", "]");
+
+            String inlineArg = null;
+            if (actionName != null && actionName.contains(":")) {
+                String[] split = actionName.split(":", 2);
+                actionName = split[0];
+                inlineArg = split[1];
+            }
+
             Action action = actionName == null ? null : actions.get(actionName.toUpperCase());
 
             if (action != null) {
                 item = item.contains(" ") ? item.split(" ", 2)[1] : "";
                 item = PlaceholderUtil.setPlaceholders(item, player);
 
+                if (inlineArg != null) {
+                    item = inlineArg + " " + item;
+                }
+
                 action.execute(plugin, player, item);
             } else {
                 plugin.getLogger().warning("There was a problem attempting to process action: '" + item + "'");
             }
         });
+    }
+
+    public Action getAction(String identifier) {
+        return actions.get(identifier.toUpperCase());
     }
 }

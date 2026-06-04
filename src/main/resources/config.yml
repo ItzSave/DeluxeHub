@@ -37,6 +37,7 @@
 # [EFFECT] e.g. EFFECT;LEVEL - Give a potion effect
 # [MENU] - Open a menu from (plugins/DeluxeHub/menus)
 # [CLOSE] - Close an open inventory GUI
+# [DELAY] - Run another action after a delay in seconds. e.g "[DELAY:10] [GAMEMODE] survival"
 #--------
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -87,15 +88,15 @@ scoreboard:
     enabled: true
     rate: 200 # In ticks (20 ticks = 1 second)
 
-  title: "&d&lDeluxeHub 3 &7(%online%/%online_max%)"
+  title: "<gradient:light_purple:dark_purple:light_purple><b>DeluxeHub3</gradient> <gray>(%online%/%online_max%)"
   lines:
-    - "&7&m----------------------"
-    - "&e&lPlayer:"
-    - "  &f%player%"
+    - "<gray><st>              </st><reset>"
+    - "<yellow><b>Player:"
+    - "  <white>%player%"
     - ""
-    - "&e&lRank:"
-    - "  &f%vault_rank%"
-    - "&7&m----------------------"
+    - "<yellow><b>Rank:"
+    - "  <white>%vault_rank%"
+    - "<gray><st>              </st><reset>"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # |TABLIST                                   |
@@ -113,14 +114,14 @@ tablist:
   # Modify the header of the tablist
   header:
     - ""
-    - "&d&lDeluxeHub &7(%online%/%online_max%)"
+    - "<gradient:light_purple:dark_purple:light_purple><b>DeluxeHub3</gradient> <gray>(%online%/%online_max%)"
     - ""
 
   # Modify the footer of the tablist
   footer:
     - ""
-    - "&6&lWebsite &fwww.examplemc.net"
-    - "&e&lStore &fbuy.examplemc.net"
+    - "<gold><b>Website</b> <white>www.examplemc.net"
+    - "<yellow><b>Store</b> <white>buy.examplemc.net"
     - ""
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -146,20 +147,20 @@ announcements:
   # Announcement list
   announcements:
     test1:
-      - "&r"
-      - "&e&lANNOUNCEMENT"
-      - "&7Rate this plugin 5 stars on Spigot!"
-      - "&r"
+      - "<reset>"
+      - "<center><yellow><b>ANNOUNCEMENT"
+      - "<gray>Rate this plugin 5 stars on Spigot!"
+      - "<reset>"
     test2:
-      - "&r"
+      - "<reset>"
       - "&e&lANNOUNCEMENT"
       - "&7This plugin was created by &eItzSave & ItsLewizzz"
-      - "&r"
+      - "<reset>"
     test3:
-      - "&r"
+      - "<reset>"
       - "&e&lANNOUNCEMENT"
-      - "&7Configure these messages in the &bconfig.yml"
-      - "&r"
+      - "<gray>Configure these messages in the <aqua>config.yml"
+      - "<reset>"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 # | LAUNCHPAD                                |

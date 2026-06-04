@@ -3,7 +3,6 @@ package net.zithium.deluxehub.utility;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import net.zithium.library.items.Base64Util;
 import net.zithium.library.utils.ColorUtil;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
