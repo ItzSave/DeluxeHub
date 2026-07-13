@@ -325,6 +325,8 @@ custom_join_items:
   enabled: true
   # Should we prevent them from moving/dropping the items?
   disable_inventory_movement: true
+  # The item that will be given to the player on join (must be one of the items in the "items" section below)
+  selected_item: server_selector
 
   items:
     infobook:
