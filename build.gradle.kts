@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.zithium"
-version = "3.8.0"
+version = "3.8.1"
 description = "DeluxeHub"
 
 repositories {
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.cryptomorin:XSeries:13.7.0")
+    implementation("com.github.cryptomorin:XSeries:13.7.1")
     implementation("javax.inject:javax.inject:1")
     implementation("javax.annotation:javax.annotation-api:1.2")
     implementation("com.github.BGMP.CommandFramework:command-framework-bukkit:master") {

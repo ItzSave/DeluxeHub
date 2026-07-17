@@ -133,7 +133,7 @@ public abstract class HotbarItem implements Listener {
     @EventHandler
     public void hotbarItemInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (XReflection.supports(9) && event.getHand() != EquipmentSlot.HAND) {
+        if (event.getHand() != EquipmentSlot.HAND) {
             return;
         }
 

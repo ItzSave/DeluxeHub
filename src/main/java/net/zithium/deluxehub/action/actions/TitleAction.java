@@ -33,11 +33,6 @@ public class TitleAction implements Action {
             stay = 3;
             fadeOut = 1;
         }
-
-        if (XReflection.supports(10)) {
-            player.sendTitle(mainTitle, subTitle, fadeIn * 20, stay * 20, fadeOut * 20);
-        } else {
-            Titles.sendTitle(player, fadeIn * 20, stay * 20, fadeOut * 20, mainTitle, subTitle);
-        }
+        player.sendTitle(mainTitle, subTitle, fadeIn * 20, stay * 20, fadeOut * 20);
     }
 }
