@@ -25,8 +25,6 @@
 #       - HIDE_POTION_EFFECTS
 #       - HIDE_UNBREAKABLE
 #
-# ITEM ACTIONS
-#   All item actions can be found here https://wiki.lewisdev.fun/free-resources/deluxehub/action-types
 
 # Slots of the GUI
 slots: 27
