@@ -1,213 +1,124 @@
-package net.zithium.deluxehub;
+package net.zithium.deluxehub.module.modules.player;
 
-import cl.bgmp.minecraft.util.commands.exceptions.CommandException;
-import cl.bgmp.minecraft.util.commands.exceptions.CommandPermissionsException;
-import cl.bgmp.minecraft.util.commands.exceptions.CommandUsageException;
-import cl.bgmp.minecraft.util.commands.exceptions.MissingNestedCommandException;
-import cl.bgmp.minecraft.util.commands.exceptions.WrappedCommandException;
-import com.tcoded.folialib.FoliaLib;
-import com.tcoded.folialib.impl.PlatformScheduler;
-import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
-import net.zithium.deluxehub.action.ActionManager;
-import net.zithium.deluxehub.command.CommandManager;
-import net.zithium.deluxehub.config.ConfigManager;
+import net.zithium.deluxehub.DeluxeHubPlugin;
+import net.zithium.deluxehub.Permissions;
 import net.zithium.deluxehub.config.ConfigType;
 import net.zithium.deluxehub.config.Messages;
-import net.zithium.deluxehub.cooldown.CooldownManager;
-import net.zithium.deluxehub.hook.HooksManager;
-import net.zithium.deluxehub.inventory.InventoryManager;
-import net.zithium.deluxehub.module.ModuleManager;
+import net.zithium.deluxehub.cooldown.CooldownType;
+import net.zithium.deluxehub.module.Module;
 import net.zithium.deluxehub.module.ModuleType;
-import net.zithium.deluxehub.module.modules.hologram.HologramManager;
-import net.zithium.deluxehub.utility.UpdateChecker;
-import org.bstats.bukkit.MetricsLite;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.GameMode;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleFlightEvent;
 
-public class DeluxeHubPlugin extends JavaPlugin {
+import java.util.List;
+import java.util.UUID;
 
-    private static PlatformScheduler scheduler;
+public class DoubleJump extends Module {
 
-    private static final int BSTATS_ID = 26336;
+    private long cooldownDelay;
+    private double launch;
+    private double launchY;
+    private List<String> actions;
 
-    public static PlatformScheduler scheduler() {
-        return scheduler;
+    public DoubleJump(DeluxeHubPlugin plugin) {
+        super(plugin, ModuleType.DOUBLE_JUMP);
     }
-
-    private ConfigManager configManager;
-    private ActionManager actionManager;
-    private HooksManager hooksManager;
-    private CommandManager commandManager;
-    private CooldownManager cooldownManager;
-    private ModuleManager moduleManager;
-    private InventoryManager inventoryManager;
 
     @Override
     public void onEnable() {
-        long start = System.currentTimeMillis();
+        FileConfiguration config = getConfig(ConfigType.SETTINGS);
+        cooldownDelay = config.getLong("double_jump.cooldown", 0);
+        launch = config.getDouble("double_jump.launch_power", 1.3);
+        launchY = config.getDouble("double_jump.launch_power_y", 1.2);
+        actions = config.getStringList("double_jump.actions");
 
-        getLogger().info(" _   _            _          _    _ ");
-        getLogger().info("| \\ |_ |  | | \\/ |_ |_| | | |_)   _)");
-        getLogger().info("|_/ |_ |_ |_| /\\ |_ | | |_| |_)   _)");
-        getLogger().info("");
-        getLogger().info("Version: " + getDescription().getVersion());
-        getLogger().info("Author: ItzSave & ItsLewizzz");
-        getLogger().info("");
-
-        // Ensure we're running on Spigot
-        if (!isSpigotEnvironment()) {
-            getLogger().severe("============= SPIGOT NOT DETECTED =============");
-            getLogger().severe("DeluxeHub requires Spigot to run.");
-            getLogger().severe("Download it here: https://www.spigotmc.org/wiki/spigot-installation/");
-            getLogger().severe("Plugin will now disable.");
-            getLogger().severe("============= SPIGOT NOT DETECTED =============");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+        if (launch > 4.0) {
+            launch = 4.0;
         }
 
-        MinecraftVersion.disableUpdateCheck();
-
-        // Initialize Folia scheduling (if needed)
-        FoliaLib foliaLib = new FoliaLib(this);
-        scheduler = foliaLib.getScheduler();
-
-        // Metrics
-        new MetricsLite(this, BSTATS_ID);
-
-        // Hooks and config
-        hooksManager = new HooksManager(this);
-
-        configManager = new ConfigManager();
-        configManager.loadFiles(this);
-
-        if (!getServer().getPluginManager().isPluginEnabled(this)) {
-            return;
+        if (launchY > 4.0) {
+            launchY = 4.0;
         }
-
-        // Core managers
-        commandManager = new CommandManager(this);
-        commandManager.reload();
-
-        cooldownManager = new CooldownManager();
-
-        inventoryManager = new InventoryManager();
-        inventoryManager.onEnable(this);
-
-        moduleManager = new ModuleManager();
-        moduleManager.loadModules(this);
-
-        actionManager = new ActionManager(this);
-
-        // Optional update check
-        if (getConfigManager().getFile(ConfigType.SETTINGS).getConfig().getBoolean("update-check")) {
-            new UpdateChecker(this).checkForUpdate();
-        }
-
-        // BungeeCord channel registration
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-
-        getLogger().info("");
-        getLogger().info("Successfully loaded in " + (System.currentTimeMillis() - start) + "ms");
-    }
-
-    private boolean isSpigotEnvironment() {
-        try {
-            Class.forName("org.spigotmc.SpigotConfig");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    public boolean isPurpurEnviroment() {
-        try {
-            Class.forName("org.purpurmc.purpur.PurpurConfig");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-    }
-
-    public void onDisable() {
-        scheduler.cancelAllTasks();
-        moduleManager.unloadModules();
-        inventoryManager.onDisable();
-        configManager.saveFiles();
-    }
-
-    public void reload() {
-        scheduler.cancelAllTasks();
-        HandlerList.unregisterAll(this);
-
-        configManager.reloadFiles();
-
-        inventoryManager.onDisable();
-        inventoryManager.onEnable(this);
-
-        getCommandManager().reload();
-
-        moduleManager.loadModules(this);
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command cmd, @NotNull String commandLabel, String[] args) {
-        try {
-            getCommandManager().execute(cmd.getName(), args, sender);
-        } catch (CommandPermissionsException e) {
-            Messages.NO_PERMISSION.send(sender);
-        } catch (MissingNestedCommandException e) {
-            sender.sendMessage(ChatColor.RED + e.getUsage());
-        } catch (CommandUsageException e) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + e.getUsage());
-        } catch (WrappedCommandException e) {
-            if (e.getCause() instanceof NumberFormatException) {
-                sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
-            } else {
-                sender.sendMessage(ChatColor.RED + "An internal error has occurred. See console.");
-                getLogger().severe("An error occurred while executing command: " + e.getMessage());
-                if (e.getCause() != null) {
-                    getLogger().severe("Caused by: " + e.getCause().getMessage());
-                }
-            }
-        } catch (CommandException e) {
-            sender.sendMessage(ChatColor.RED + e.getMessage());
+    public void onDisable() {
+    }
+
+    @EventHandler
+    public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
+        Player player = event.getPlayer();
+
+        if (player.hasPermission(Permissions.DOUBLE_JUMP_BYPASS.getPermission())) {
+            return;
         }
 
-        return true;
+        if (inDisabledWorld(player.getLocation())) {
+            return;
+        }
+
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+            return;
+        }
+
+        if (!event.isFlying()) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        UUID uuid = player.getUniqueId();
+        if (!tryCooldown(uuid, CooldownType.DOUBLE_JUMP, cooldownDelay)) {
+            Messages.DOUBLE_JUMP_COOLDOWN.send(player, "%time%", getCooldown(uuid, CooldownType.DOUBLE_JUMP));
+            return;
+        }
+
+        player.setVelocity(player.getLocation().getDirection().multiply(launch).setY(launchY));
+        player.setFallDistance(0.0F);
+        player.setFlying(false);
+        executeActions(player, actions);
     }
 
-    public HologramManager getHologramManager() {
-        return (HologramManager) moduleManager.getModule(ModuleType.HOLOGRAMS);
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+
+        if (player.getAllowFlight()) {
+            return;
+        }
+
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+            return;
+        }
+
+        if (inDisabledWorld(player.getLocation())) {
+            return;
+        }
+
+        if (player.isOnGround()) {
+            player.setAllowFlight(true);
+        }
     }
 
-    public HooksManager getHookManager() {
-        return hooksManager;
+    @EventHandler
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR && !inDisabledWorld(player.getLocation())) {
+            player.setAllowFlight(true);
+        }
     }
 
-    public ModuleManager getModuleManager() {
-        return moduleManager;
-    }
-
-    public CommandManager getCommandManager() {
-        return commandManager;
-    }
-
-    public CooldownManager getCooldownManager() {
-        return cooldownManager;
-    }
-
-    public InventoryManager getInventoryManager() {
-        return inventoryManager;
-    }
-
-    public ConfigManager getConfigManager() {
-        return configManager;
-    }
-
-    public ActionManager getActionManager() {
-        return actionManager;
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+            player.setAllowFlight(true);
+        }
     }
 }
