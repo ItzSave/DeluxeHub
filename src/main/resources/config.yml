@@ -77,6 +77,10 @@ scoreboard:
   # Should the scoreboard feature be enabled?
   enabled: true
 
+  # Should the red numbers on the right of the scoreboard be disabled?
+  # Note: This can cause the scoreboard to be randomized for Bedrock/Geyser players.
+  disable_red_numbers: true
+
   # Should we delay showing the scoreboard?
   # Value in ticks (20 ticks = 1 second), 0 to disable
   display_delay:
@@ -153,12 +157,12 @@ announcements:
       - "<reset>"
     test2:
       - "<reset>"
-      - "&e&lANNOUNCEMENT"
-      - "&7This plugin was created by &eItzSave & ItsLewizzz"
+      - "<yellow><b>ANNOUNCEMENT"
+      - "<gray>This plugin was created by &eItzSave & ItsLewizzz"
       - "<reset>"
     test3:
       - "<reset>"
-      - "&e&lANNOUNCEMENT"
+      - "<yellow><b>ANNOUNCEMENT"
       - "<gray>Configure these messages in the <aqua>config.yml"
       - "<reset>"
 

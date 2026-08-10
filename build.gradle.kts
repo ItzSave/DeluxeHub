@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.zithium"
-version = "3.8.1"
+version = "3.8.3"
 description = "DeluxeHub"
 
 repositories {
@@ -27,7 +27,7 @@ dependencies {
         exclude(group = "org.bukkit", module = "bukkit")
     }
     implementation("com.tcoded:FoliaLib:0.5.1")
-    implementation("de.tr7zw:item-nbt-api:2.15.7") // UPDATE THIS FOR EACH NEW MC VERSION
+    implementation("de.tr7zw:item-nbt-api:2.16.0") // UPDATE THIS FOR EACH NEW MC VERSION
     implementation("org.bstats:bstats-bukkit-lite:1.7")
     implementation("com.github.shynixn.headdatabase:hdb-api:1.0")
     implementation("com.github.ItzSave:ZithiumLibrary:1f5182b77f")

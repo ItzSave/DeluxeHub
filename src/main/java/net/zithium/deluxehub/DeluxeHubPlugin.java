@@ -20,8 +20,8 @@ import net.zithium.deluxehub.module.ModuleManager;
 import net.zithium.deluxehub.module.ModuleType;
 import net.zithium.deluxehub.module.modules.hologram.HologramManager;
 import net.zithium.deluxehub.utility.UpdateChecker;
+import net.zithium.library.utils.ColorUtil;
 import org.bstats.bukkit.MetricsLite;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -46,6 +46,7 @@ public class DeluxeHubPlugin extends JavaPlugin {
     private InventoryManager inventoryManager;
 
     @Override
+    @SuppressWarnings("deprecation") // getDescription() is deprecated but there is no alternative yet.
     public void onEnable() {
         long start = System.currentTimeMillis();
 
@@ -159,21 +160,21 @@ public class DeluxeHubPlugin extends JavaPlugin {
         } catch (CommandPermissionsException e) {
             Messages.NO_PERMISSION.send(sender);
         } catch (MissingNestedCommandException e) {
-            sender.sendMessage(ChatColor.RED + e.getUsage());
+            sender.sendMessage(ColorUtil.color("<red>" + e.getUsage()));
         } catch (CommandUsageException e) {
-            sender.sendMessage(ChatColor.RED + "Usage: " + e.getUsage());
+            sender.sendMessage(ColorUtil.color("<red>" + "Usage: " + e.getUsage()));
         } catch (WrappedCommandException e) {
             if (e.getCause() instanceof NumberFormatException) {
-                sender.sendMessage(ChatColor.RED + "Number expected, string received instead.");
+                sender.sendMessage(ColorUtil.color("<red>Number expected, string received instead."));
             } else {
-                sender.sendMessage(ChatColor.RED + "An internal error has occurred. See console.");
+                sender.sendMessage(ColorUtil.color("<red>An internal error has occurred. See console."));
                 getLogger().severe("An error occurred while executing command: " + e.getMessage());
                 if (e.getCause() != null) {
                     getLogger().severe("Caused by: " + e.getCause().getMessage());
                 }
             }
         } catch (CommandException e) {
-            sender.sendMessage(ChatColor.RED + e.getMessage());
+            sender.sendMessage(ColorUtil.color("<red>" + e.getMessage()));
         }
 
         return true;

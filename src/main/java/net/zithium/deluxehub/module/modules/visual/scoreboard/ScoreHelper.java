@@ -20,7 +20,7 @@ public class ScoreHelper {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     private final Player player;
-    private Scoreboard scoreboard;
+    private final Scoreboard scoreboard;
     private Objective objective;
     private final Map<Integer, Team> slotTeams = new HashMap<>();
 
@@ -36,7 +36,10 @@ public class ScoreHelper {
             if (objective == null) {
                 objective = scoreboard.registerNewObjective("sidebar", Criteria.DUMMY, titleComponent);
                 objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-                objective.numberFormat(NumberFormat.blank());
+
+                if (plugin.getConfig().getBoolean("scoreboard.disable_red_numbers", false)) {
+                    objective.numberFormat(NumberFormat.blank());
+                }
                 player.setScoreboard(scoreboard);
             } else {
                 objective.displayName(titleComponent);
