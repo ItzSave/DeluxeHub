@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "net.zithium"
-version = "3.8.3"
+version = "3.8.4"
 description = "DeluxeHub"
 
 repositories {

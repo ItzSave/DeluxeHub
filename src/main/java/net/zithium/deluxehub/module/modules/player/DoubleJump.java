@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import java.util.List;
@@ -71,13 +72,12 @@ public class DoubleJump extends Module {
             return;
         }
 
-        // Check if player is on solid ground (more reliable than checking for AIR)
-        if (!player.getLocation().subtract(0, 1, 0).getBlock().getType().isSolid()) {
+        // Cancel if the player is standing on solid ground - not a legitimate double jump
+        if (player.getLocation().subtract(0, 1, 0).getBlock().getType().isSolid()) {
             event.setCancelled(true);
             return;
         }
 
-        // Cancel flight and handle double jump
         event.setCancelled(true);
 
         UUID uuid = player.getUniqueId();
@@ -86,12 +86,42 @@ public class DoubleJump extends Module {
             return;
         }
 
-        // Perform the double jump
         player.setVelocity(player.getLocation().getDirection().multiply(launch).setY(launchY));
         executeActions(player, actions);
 
-        // Optional: disable flight until they land again
+        // Disable flight until they land again - restored in onPlayerMove
         player.setAllowFlight(false);
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (event.getFrom().getBlockY() == event.getTo().getBlockY()) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+
+        // Already has flight available, nothing to restore
+        if (player.getAllowFlight()) {
+            return;
+        }
+
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+            return;
+        }
+
+        if (player.hasPermission(Permissions.DOUBLE_JUMP_BYPASS.getPermission())) {
+            return;
+        }
+
+        if (inDisabledWorld(player.getLocation())) {
+            return;
+        }
+
+        // Player has landed allow them to jump again
+        if (player.getLocation().subtract(0, 1, 0).getBlock().getType().isSolid()) {
+            player.setAllowFlight(true);
+        }
     }
 
     @EventHandler
@@ -105,7 +135,7 @@ public class DoubleJump extends Module {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+        if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR && !inDisabledWorld(player.getLocation())) {
             player.setAllowFlight(true);
         }
     }
