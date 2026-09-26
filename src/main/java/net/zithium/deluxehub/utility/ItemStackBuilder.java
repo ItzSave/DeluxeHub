@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -109,14 +110,14 @@ public class ItemStackBuilder {
 
     public ItemStackBuilder withName(String name) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
-        meta.displayName(TextUtil.parse(name));
+        meta.displayName(itemText(name));
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
 
     public ItemStackBuilder withName(String name, Player player) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
-        meta.displayName(TextUtil.parse(PlaceholderUtil.setPlaceholders(name, player)));
+        meta.displayName(itemText(PlaceholderUtil.setPlaceholders(name, player)));
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
@@ -136,7 +137,7 @@ public class ItemStackBuilder {
         List<Component> coloredLore = new ArrayList<>();
         for (String s : lore) {
             s = PlaceholderUtil.setPlaceholders(s, player);
-            coloredLore.add(TextUtil.parse(s));
+            coloredLore.add(itemText(s));
         }
 
         meta.lore(coloredLore);
@@ -148,7 +149,7 @@ public class ItemStackBuilder {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
         List<Component> coloredLore = new ArrayList<>();
         for (String s : lore) {
-            coloredLore.add(TextUtil.parse(s));
+            coloredLore.add(itemText(s));
         }
 
         meta.lore(coloredLore);
@@ -173,5 +174,12 @@ public class ItemStackBuilder {
 
     public ItemStack build() {
         return ITEM_STACK;
+    }
+
+    private static Component itemText(String text) {
+        Component component = TextUtil.parse(text);
+        return component.decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET
+                ? component.decoration(TextDecoration.ITALIC, false)
+                : component;
     }
 }
