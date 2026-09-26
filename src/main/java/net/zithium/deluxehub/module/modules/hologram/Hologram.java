@@ -4,7 +4,7 @@ import com.tcoded.folialib.impl.PlatformScheduler;
 import net.zithium.deluxehub.DeluxeHubPlugin;
 import net.zithium.deluxehub.utility.TeleportUtil;
 import net.zithium.deluxehub.utility.reflection.ArmorStandName;
-import net.zithium.library.utils.ColorUtil;
+import net.zithium.deluxehub.utility.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
@@ -62,7 +62,7 @@ public class Hologram {
             stand.setVisible(false);
             stand.setGravity(false);
             stand.setCustomNameVisible(true);
-            stand.setCustomName(ColorUtil.color(text).trim());
+            stand.customName(TextUtil.parse(text.trim()));
             stand.setCanPickupItems(false);
             stands.add(stand);
         });
@@ -76,7 +76,7 @@ public class Hologram {
         }
 
         ArmorStand stand = stands.get(line - 1);
-        scheduler.runAtEntity(stand, task -> stand.setCustomName(ColorUtil.color(text).trim()));
+        scheduler.runAtEntity(stand, task -> stand.customName(TextUtil.parse(text.trim())));
         return this;
     }
 

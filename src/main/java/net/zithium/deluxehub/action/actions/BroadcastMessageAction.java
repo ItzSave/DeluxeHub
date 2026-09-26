@@ -2,7 +2,7 @@ package net.zithium.deluxehub.action.actions;
 
 import net.zithium.deluxehub.DeluxeHubPlugin;
 import net.zithium.deluxehub.action.Action;
-import net.zithium.library.utils.ColorUtil;
+import net.zithium.deluxehub.utility.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -16,7 +16,7 @@ public class BroadcastMessageAction implements Action {
     @Override
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(ColorUtil.color(data));
+            p.sendMessage(TextUtil.parse(data));
         }
     }
 }

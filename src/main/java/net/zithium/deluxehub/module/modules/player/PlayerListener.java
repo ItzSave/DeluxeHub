@@ -7,7 +7,6 @@ import net.zithium.deluxehub.module.Module;
 import net.zithium.deluxehub.module.ModuleType;
 import net.zithium.deluxehub.utility.PlaceholderUtil;
 import net.zithium.deluxehub.utility.TextUtil;
-import net.zithium.library.utils.ColorUtil;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.attribute.Attribute;
@@ -100,7 +99,7 @@ public class PlayerListener extends Module {
                 event.joinMessage(null);
             } else {
                 String message = PlaceholderUtil.setPlaceholders(joinMessage, player);
-                event.setJoinMessage(ColorUtil.color(message));
+                event.joinMessage(TextUtil.parse(message));
             }
         }
 
@@ -150,7 +149,7 @@ public class PlayerListener extends Module {
                 event.quitMessage(null);
             } else {
                 String message = PlaceholderUtil.setPlaceholders(quitMessage, player);
-                event.setQuitMessage(ColorUtil.color(message));
+                event.quitMessage(TextUtil.parse(message));
             }
         }
 

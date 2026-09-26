@@ -3,7 +3,7 @@ package net.zithium.deluxehub.utility;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import net.zithium.library.utils.ColorUtil;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -109,14 +109,14 @@ public class ItemStackBuilder {
 
     public ItemStackBuilder withName(String name) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
-        meta.setDisplayName(ColorUtil.color(name));
+        meta.displayName(TextUtil.parse(name));
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
 
     public ItemStackBuilder withName(String name, Player player) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
-        meta.setDisplayName(ColorUtil.color(PlaceholderUtil.setPlaceholders(name, player)));
+        meta.displayName(TextUtil.parse(PlaceholderUtil.setPlaceholders(name, player)));
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
@@ -133,25 +133,25 @@ public class ItemStackBuilder {
 
     public ItemStackBuilder withLore(List<String> lore, Player player) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
-        List<String> coloredLore = new ArrayList<>();
+        List<Component> coloredLore = new ArrayList<>();
         for (String s : lore) {
             s = PlaceholderUtil.setPlaceholders(s, player);
-            coloredLore.add(ColorUtil.color(s));
+            coloredLore.add(TextUtil.parse(s));
         }
 
-        meta.setLore(coloredLore);
+        meta.lore(coloredLore);
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
 
     public ItemStackBuilder withLore(List<String> lore) {
         final ItemMeta meta = ITEM_STACK.getItemMeta();
-        List<String> coloredLore = new ArrayList<>();
+        List<Component> coloredLore = new ArrayList<>();
         for (String s : lore) {
-            coloredLore.add(ColorUtil.color(s));
+            coloredLore.add(TextUtil.parse(s));
         }
 
-        meta.setLore(coloredLore);
+        meta.lore(coloredLore);
         ITEM_STACK.setItemMeta(meta);
         return this;
     }
