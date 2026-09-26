@@ -103,7 +103,7 @@ public class TextUtil {
         while (hex.find()) {
             String sequence = hex.group();
             String color = sequence.replaceAll("(?i)§x|§", "");
-            hex.appendReplacement(buffer, "<#$color>");
+            hex.appendReplacement(buffer, java.util.regex.Matcher.quoteReplacement("<#" + color + ">"));
         }
         hex.appendTail(buffer);
         normalized = buffer.toString().replaceAll("(?i)§([0-9A-FK-OR])", "<$1>");
