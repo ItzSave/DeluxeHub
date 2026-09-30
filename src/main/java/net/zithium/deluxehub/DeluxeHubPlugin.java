@@ -133,10 +133,19 @@ public class DeluxeHubPlugin extends JavaPlugin {
     }
 
     public void onDisable() {
-        scheduler.cancelAllTasks();
-        moduleManager.unloadModules();
-        inventoryManager.onDisable();
-        configManager.saveFiles();
+        if (scheduler != null) {
+            scheduler.cancelAllTasks();
+            scheduler = null;
+        }
+        if (moduleManager != null) {
+            moduleManager.unloadModules();
+        }
+        if (inventoryManager != null) {
+            inventoryManager.onDisable();
+        }
+        if (configManager != null) {
+            configManager.saveFiles();
+        }
     }
 
     public void reload() {
