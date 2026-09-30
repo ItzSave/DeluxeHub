@@ -67,6 +67,7 @@ tasks {
         relocate("com.tcoded.folialib", "net.zithium.deluxehub.libs.folialib")
         relocate("de.tr7zw.changeme.nbtapi", "net.zithium.deluxehub.libs.nbt")
         relocate("net.zithium.library", "net.zithium.deluxehub.libs.library")
+        relocate("net.kyori.adventure", "net.zithium.deluxehub.libs.adventure")
         relocate("com.cryptomorin.xseries", "net.zithium.deluxehub.libs.xseries")
     }
 }
