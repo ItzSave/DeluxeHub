@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.6.1"
 }
 
 group = "net.zithium"
@@ -20,26 +20,26 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.cryptomorin:XSeries:13.7.1")
+    implementation("com.github.cryptomorin:XSeries:13.8.0")
     implementation("javax.inject:javax.inject:1")
-    implementation("javax.annotation:javax.annotation-api:1.2")
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.github.BGMP.CommandFramework:command-framework-bukkit:master") {
         exclude(group = "org.bukkit", module = "bukkit")
     }
-    implementation("com.tcoded:FoliaLib:0.5.1")
-    implementation("de.tr7zw:item-nbt-api:2.16.0") // UPDATE THIS FOR EACH NEW MC VERSION
-    implementation("org.bstats:bstats-bukkit-lite:1.7")
+    implementation("com.tcoded:FoliaLib:0.5.2")
+    implementation("de.tr7zw:item-nbt-api:2.16.1") // UPDATE THIS FOR EACH NEW MC VERSION
+    implementation("org.bstats:bstats-bukkit-lite:1.8")
     implementation("com.github.shynixn.headdatabase:hdb-api:1.0")
-    implementation("com.github.ItzSave:ZithiumLibrary:1f5182b77f")
+    implementation("com.github.ItzSave:ZithiumLibrary:2.1.1")
 
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("net.md-5:bungeecord-chat:1.16-R0.1")
-    compileOnly("com.mojang:authlib:1.5.21")
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("io.papermc.paper:paper-api:26.3-rc-3.build.1-alpha")
+    compileOnly("net.md-5:bungeecord-chat:1.21-R0.4")
+    compileOnly("com.google.code.findbugs:jsr305:3.0.2")
+    compileOnly("me.clip:placeholderapi:2.12.3")
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 tasks {
