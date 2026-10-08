@@ -20,6 +20,7 @@ import net.zithium.deluxehub.command.commands.gamemode.SpectatorCommand;
 import net.zithium.deluxehub.command.commands.gamemode.SurvivalCommand;
 import net.zithium.deluxehub.config.ConfigType;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import java.util.List;
 public class CommandManager {
 
     private final DeluxeHubPlugin plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config;
 
     private CommandsManager commands;
     private CommandsManagerRegistration commandRegistry;
@@ -42,6 +43,8 @@ public class CommandManager {
     }
 
     public void reload() {
+        config = plugin.getConfigManager().getFile(ConfigType.COMMANDS).getConfig();
+
         if (commandRegistry != null) {
             commandRegistry.unregisterCommands();
         }
@@ -52,10 +55,15 @@ public class CommandManager {
 
         commandRegistry.register(DeluxeHubCommand.class);
 
-        for (String command : config.getConfigurationSection("commands").getKeys(false)) {
-            if (!config.getBoolean("commands." + command + ".enabled")) continue;
+        ConfigurationSection commandsSection = config.getConfigurationSection("commands");
+        if (commandsSection == null) {
+            plugin.getLogger().warning("The 'commands' section in commands.yml is missing or invalid; built-in commands will not be registered.");
+        } else {
+            for (String command : commandsSection.getKeys(false)) {
+                if (!config.getBoolean("commands." + command + ".enabled")) continue;
 
-            registerCommand(command, config.getStringList("commands." + command + ".aliases").toArray(new String[0]));
+                registerCommand(command, config.getStringList("commands." + command + ".aliases").toArray(new String[0]));
+            }
         }
 
         reloadCustomCommands();
@@ -70,11 +78,15 @@ public class CommandManager {
             customCommands.clear();
         }
 
-        if (!config.isSet("custom_commands")) {
+        ConfigurationSection customCommandsSection = config.getConfigurationSection("custom_commands");
+        if (customCommandsSection == null) {
+            if (config.isSet("custom_commands")) {
+                plugin.getLogger().warning("The 'custom_commands' section in commands.yml is invalid; custom commands will not be loaded.");
+            }
             return;
         }
 
-        for (String entry : config.getConfigurationSection("custom_commands").getKeys(false)) {
+        for (String entry : customCommandsSection.getKeys(false)) {
 
             CustomCommand customCommand = new CustomCommand(entry, config.getStringList("custom_commands." + entry + ".actions"));
 
