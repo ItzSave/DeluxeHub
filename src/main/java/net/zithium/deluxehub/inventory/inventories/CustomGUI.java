@@ -5,7 +5,7 @@ import net.zithium.deluxehub.inventory.AbstractInventory;
 import net.zithium.deluxehub.inventory.InventoryBuilder;
 import net.zithium.deluxehub.inventory.InventoryItem;
 import net.zithium.deluxehub.utility.ItemStackBuilder;
-import net.zithium.library.utils.ColorUtil;
+import net.zithium.deluxehub.utility.TextUtil;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
 
@@ -24,7 +24,7 @@ public class CustomGUI extends AbstractInventory {
     @Override
     public void onEnable() {
 
-        InventoryBuilder inventoryBuilder = new InventoryBuilder(config.getInt("slots"), ColorUtil.color(config.getString("title")));
+        InventoryBuilder inventoryBuilder = new InventoryBuilder(config.getInt("slots"), TextUtil.legacy(config.getString("title")));
 
         if (config.contains("refresh") && config.getBoolean("refresh.enabled")) {
             setInventoryRefresh(config.getLong("refresh.rate"));
