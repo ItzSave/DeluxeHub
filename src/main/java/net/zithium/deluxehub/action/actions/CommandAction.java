@@ -13,6 +13,7 @@ public class CommandAction implements Action {
 
     @Override
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
-        player.chat(data.contains("/") ? data : "/" + data);
+        String msg = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(data, player);
+        player.chat(msg.contains("/") ? msg : "/" + msg);
     }
 }

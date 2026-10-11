@@ -28,8 +28,11 @@ public class PlaceholderUtil {
             text = text.replace("%location%", location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ());
         }
 
-        if (PAPI && player != null) {
-            text = PlaceholderAPI.setPlaceholders(player, text);
+        if (text != null && (PAPI || Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))) {
+            try {
+                text = PlaceholderAPI.setPlaceholders(player, text);
+            } catch (Throwable ignored) {
+            }
         }
 
         return text;

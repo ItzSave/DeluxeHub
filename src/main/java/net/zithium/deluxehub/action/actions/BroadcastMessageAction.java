@@ -15,8 +15,9 @@ public class BroadcastMessageAction implements Action {
 
     @Override
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
+        String msg = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(data, player);
         for (Player p : Bukkit.getOnlinePlayers()) {
-            p.sendMessage(ColorUtil.color(data));
+            p.sendMessage(ColorUtil.color(msg));
         }
     }
 }

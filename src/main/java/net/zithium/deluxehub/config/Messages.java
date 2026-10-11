@@ -88,7 +88,13 @@ public enum Messages {
         }
 
         if (!message.isEmpty()) {
-            receiver.sendMessage(ColorUtil.color(replace(message, replacements)));
+            message = replace(message, replacements);
+            if (receiver instanceof org.bukkit.entity.Player) {
+                message = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(message, (org.bukkit.entity.Player) receiver);
+            } else {
+                message = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(message, null);
+            }
+            receiver.sendMessage(ColorUtil.color(message));
         }
     }
 

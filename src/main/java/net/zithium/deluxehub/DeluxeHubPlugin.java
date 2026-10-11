@@ -143,23 +143,35 @@ public class DeluxeHubPlugin extends JavaPlugin {
         if (inventoryManager != null) {
             inventoryManager.onDisable();
         }
-        if (configManager != null) {
-            configManager.saveFiles();
-        }
+    }
+
+    private boolean isReloading = false;
+
+    public boolean isReloading() {
+        return isReloading;
     }
 
     public void reload() {
-        scheduler.cancelAllTasks();
-        HandlerList.unregisterAll(this);
+        isReloading = true;
+        try {
+            scheduler.cancelAllTasks();
+            HandlerList.unregisterAll(this);
 
-        configManager.reloadFiles();
+            if (moduleManager != null) {
+                moduleManager.unloadModules();
+            }
 
-        inventoryManager.onDisable();
-        inventoryManager.onEnable(this);
+            configManager.reloadFiles();
 
-        getCommandManager().reload();
+            inventoryManager.onDisable();
+            inventoryManager.onEnable(this);
 
-        moduleManager.loadModules(this);
+            getCommandManager().reload();
+
+            moduleManager.loadModules(this);
+        } finally {
+            isReloading = false;
+        }
     }
 
     @Override

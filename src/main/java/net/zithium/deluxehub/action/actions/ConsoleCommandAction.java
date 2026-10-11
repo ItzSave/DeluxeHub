@@ -17,6 +17,7 @@ public class ConsoleCommandAction implements Action {
 
     @Override
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
-        scheduler.runNextTick(task -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), data));
+        String msg = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(data, player);
+        scheduler.runNextTick(task -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), msg));
     }
 }

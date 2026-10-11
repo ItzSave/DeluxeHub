@@ -384,3 +384,13 @@ player_hider:
     display_name: '&dPlayers &8&l> &cHidden &7(Right-Click)'
     lore:
       - '&7Click to show all players!'
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# | HOLOGRAMS                                |
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+holograms:
+  # Should we refresh the holograms (update placeholders)?
+  refresh:
+    enabled: true
+    rate: 20 # In ticks (20 ticks = 1 second)

@@ -15,6 +15,7 @@ public class ActionbarAction implements Action {
 
     @Override
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
-        ActionBar.sendActionBar(player, ColorUtil.color(data));
+        String msg = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(data, player);
+        ActionBar.sendActionBar(player, ColorUtil.color(msg));
     }
 }

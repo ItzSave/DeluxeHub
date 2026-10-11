@@ -16,8 +16,8 @@ public class TitleAction implements Action {
     public void execute(DeluxeHubPlugin plugin, Player player, String data) {
         String[] args = data.split(";");
 
-        String mainTitle = ColorUtil.color(args[0]);
-        String subTitle = ColorUtil.color(args[1]);
+        String mainTitle = ColorUtil.color(net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(args[0], player));
+        String subTitle = ColorUtil.color(net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(args[1], player));
 
         int fadeIn;
         int stay;

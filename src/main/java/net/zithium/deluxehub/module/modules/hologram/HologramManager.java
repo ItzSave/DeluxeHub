@@ -21,6 +21,7 @@ public class HologramManager extends Module {
     private final PlatformScheduler scheduler = DeluxeHubPlugin.scheduler();
 
     private Set<Hologram> holograms;
+    private com.tcoded.folialib.wrapper.task.WrappedTask updateTask;
 
     public HologramManager(DeluxeHubPlugin plugin) {
         super(plugin, ModuleType.HOLOGRAMS);
@@ -30,11 +31,21 @@ public class HologramManager extends Module {
     public void onEnable() {
         holograms = ConcurrentHashMap.newKeySet();
         loadHolograms();
+        
+        FileConfiguration config = getPlugin().getConfigManager().getFile(ConfigType.SETTINGS).getConfig();
+        boolean refreshEnabled = config.getBoolean("holograms.refresh.enabled", true);
+        long refreshRate = config.getLong("holograms.refresh.rate", 20L);
+        
+        if (refreshEnabled && refreshRate > 0) {
+            updateTask = scheduler.runTimer(new HologramUpdateTask(this), refreshRate, refreshRate);
+        }
     }
 
     @Override
     public void onDisable() {
-        saveHologramsData();
+        if (updateTask != null) {
+            updateTask.cancel();
+        }
         removeAllHologramEntities();
     }
 
@@ -46,7 +57,15 @@ public class HologramManager extends Module {
                 for (String key : config.getConfigurationSection("holograms").getKeys(false)) {
                     List<String> lines = config.getStringList("holograms." + key + ".lines");
 
-                    Location loc = (Location) config.get("holograms." + key + ".location");
+                    Location loc = config.getLocation("holograms." + key + ".location");
+                    if (loc == null && config.isConfigurationSection("holograms." + key + ".location")) {
+                        org.bukkit.configuration.ConfigurationSection sec = config.getConfigurationSection("holograms." + key + ".location");
+                        World w = org.bukkit.Bukkit.getWorld(sec.getString("world", "world"));
+                        if (w != null) {
+                            loc = new Location(w, sec.getDouble("x"), sec.getDouble("y"), sec.getDouble("z"), (float) sec.getDouble("yaw", 0.0), (float) sec.getDouble("pitch", 0.0));
+                        }
+                    }
+
                     if (loc == null) {
                         continue;
                     }
@@ -65,16 +84,11 @@ public class HologramManager extends Module {
         deleteAllHolograms();
     }
 
-    private void saveHologramsData() {
+    public void saveHologramsData() {
         FileConfiguration config = getConfig(ConfigType.DATA);
         holograms.forEach(hologram -> {
             config.set("holograms." + hologram.getName() + ".location", hologram.getLocation());
-            List<String> lines = new ArrayList<>();
-            for (ArmorStand stand : hologram.getStands()) {
-                lines.add(ArmorStandName.getName(stand));
-            }
-
-            config.set("holograms." + hologram.getName() + ".lines", lines);
+            config.set("holograms." + hologram.getName() + ".lines", hologram.getLines());
         });
 
         getPlugin().getConfigManager().getFile(ConfigType.DATA).save();
@@ -115,13 +129,28 @@ public class HologramManager extends Module {
         holograms.clear();
     }
 
+    @org.bukkit.event.EventHandler
+    public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
+        org.bukkit.entity.Player player = event.getPlayer();
+        // Delay spawning slightly to ensure player is fully in world
+        scheduler.runAtEntityLater(player, task -> {
+            for (Hologram holo : holograms) {
+                holo.spawnFor(player);
+            }
+        }, 10L);
+    }
+
+    @org.bukkit.event.EventHandler
+    public void onPlayerQuit(org.bukkit.event.player.PlayerQuitEvent event) {
+        org.bukkit.entity.Player player = event.getPlayer();
+        for (Hologram holo : holograms) {
+            holo.removeFor(player.getUniqueId());
+        }
+    }
+
     private void removeAllHologramEntities() {
         for (Hologram hologram : holograms) {
-            for (ArmorStand stand : hologram.getStands()) {
-                if (stand != null && stand.isValid()) {
-                    stand.remove();
-                }
-            }
+            hologram.remove();
         }
     }
 
@@ -131,8 +160,9 @@ public class HologramManager extends Module {
             return;
         }
 
-        scheduler.runAtLocation(location, task -> world.getNearbyEntities(location, 0.5, 20, 0.5).stream()
+        scheduler.runAtLocation(location, task -> world.getNearbyEntities(location, 2.0, 20.0, 2.0).stream()
                 .filter(entity -> entity instanceof ArmorStand)
+                .filter(entity -> !entity.getScoreboardTags().contains("deluxehub_active"))
                 .forEach(entity -> scheduler.runAtEntity(entity, nextTask -> entity.remove())));
     }
 }

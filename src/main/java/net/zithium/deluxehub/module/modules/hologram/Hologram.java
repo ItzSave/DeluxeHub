@@ -3,17 +3,19 @@ package net.zithium.deluxehub.module.modules.hologram;
 import com.tcoded.folialib.impl.PlatformScheduler;
 import net.zithium.deluxehub.DeluxeHubPlugin;
 import net.zithium.deluxehub.utility.TeleportUtil;
-import net.zithium.deluxehub.utility.reflection.ArmorStandName;
 import net.zithium.library.utils.ColorUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class Hologram {
 
@@ -21,8 +23,13 @@ public class Hologram {
 
     private final PlatformScheduler scheduler;
     private final DeluxeHubPlugin plugin;
-    private final List<ArmorStand> stands;
-    private final AtomicInteger lineCounter;
+    
+    // original lines of the hologram
+    private final List<String> originalLines;
+    
+    // Mapping of player UUID to their personal armor stands
+    private final Map<UUID, List<ArmorStand>> playerStands;
+    
     private Location location;
     private final String name;
 
@@ -31,119 +38,195 @@ public class Hologram {
         this.plugin = plugin;
         this.name = name;
         this.location = location;
-        this.stands = new CopyOnWriteArrayList<>();
-        this.lineCounter = new AtomicInteger(0);
+        this.originalLines = new CopyOnWriteArrayList<>();
+        this.playerStands = new ConcurrentHashMap<>();
     }
 
     public Hologram setLines(List<String> lines) {
-        List<ArmorStand> oldStands = new CopyOnWriteArrayList<>(stands);
-        stands.clear();
-        lineCounter.set(0);
-
-        for (ArmorStand stand : oldStands) {
-            scheduler.runAtEntity(stand, task -> stand.remove());
+        // Remove all existing stands for all players
+        for (UUID uuid : playerStands.keySet()) {
+            removeFor(uuid);
         }
-
-        for (String s : lines) {
-            addLine(s);
+        originalLines.clear();
+        originalLines.addAll(lines);
+        
+        // Respawn for all online players
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            spawnFor(p);
         }
-
         return this;
     }
 
     public Hologram addLine(String text) {
-        final int currentIndex = lineCounter.getAndIncrement();
-        final double height = currentIndex * LINE_HEIGHT;
-
-        scheduler.runAtLocation(location, task -> {
-            ArmorStand stand = (ArmorStand) location.getWorld().spawnEntity(
-                location.clone().subtract(0, height, 0),
-                EntityType.ARMOR_STAND);
-            stand.setVisible(false);
-            stand.setGravity(false);
-            stand.setCustomNameVisible(true);
-            stand.setCustomName(ColorUtil.color(text).trim());
-            stand.setCanPickupItems(false);
-            stands.add(stand);
-        });
-
+        originalLines.add(text);
+        int lineIndex = originalLines.size() - 1;
+        
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            spawnLineFor(p, lineIndex, text);
+        }
         return this;
     }
 
     public Hologram setLine(int line, String text) {
-        if (line < 1 || line > stands.size()) {
+        if (line < 1 || line > originalLines.size()) {
             return this;
         }
-
-        ArmorStand stand = stands.get(line - 1);
-        scheduler.runAtEntity(stand, task -> stand.setCustomName(ColorUtil.color(text).trim()));
+        int index = line - 1;
+        originalLines.set(index, text);
+        
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            List<ArmorStand> stands = playerStands.get(p.getUniqueId());
+            if (stands != null && index < stands.size()) {
+                ArmorStand stand = stands.get(index);
+                scheduler.runAtEntity(stand, task -> {
+                    String parsedText = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(text, p);
+                    stand.setCustomName(ColorUtil.color(parsedText).trim());
+                });
+            }
+        }
         return this;
     }
 
     public Hologram removeLine(int line) {
-        if (line < 1 || line > stands.size()) {
+        if (line < 1 || line > originalLines.size()) {
             return this;
         }
-
-        ArmorStand stand = stands.get(line - 1);
         int index = line - 1;
-        scheduler.runAtEntity(stand, task -> {
-            stand.remove();
-            stands.remove(index);
-            lineCounter.decrementAndGet();
-            refreshLines(index);
-        });
-
+        originalLines.remove(index);
+        
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            List<ArmorStand> stands = playerStands.get(p.getUniqueId());
+            if (stands != null && index < stands.size()) {
+                ArmorStand stand = stands.remove(index);
+                scheduler.runAtEntity(stand, task -> stand.remove());
+                refreshLinesFor(p, index);
+            }
+        }
         return this;
     }
 
-    public boolean refreshLines(int line) {
-        List<ArmorStand> standsTemp = new ArrayList<>();
-
-        int count = 0;
-        for (ArmorStand entry : stands) {
-            if (count >= line) {
-                standsTemp.add(entry);
-            }
-
-            count++;
-        }
-
-        for (ArmorStand stand : standsTemp) {
-            Location newLocation = stand.getLocation().add(0, LINE_HEIGHT, 0);
+    private void refreshLinesFor(Player player, int fromIndex) {
+        List<ArmorStand> stands = playerStands.get(player.getUniqueId());
+        if (stands == null) return;
+        
+        for (int i = fromIndex; i < stands.size(); i++) {
+            ArmorStand stand = stands.get(i);
+            Location newLocation = location.clone().subtract(0, i * LINE_HEIGHT, 0);
             TeleportUtil.teleportCompat(stand, newLocation);
         }
-
-        return count >= 1;
     }
 
     public Hologram setLocation(Location location) {
         this.location = location;
-        setLines(stands.stream().map(ArmorStandName::getName).collect(Collectors.toList()));
+        setLines(new ArrayList<>(originalLines));
         return this;
     }
 
     public boolean hasLine(int line) {
-        return line - 1 < stands.size() && line > 0;
+        return line - 1 < originalLines.size() && line > 0;
     }
 
     public void remove() {
-        if (plugin.isEnabled()) {
+        for (UUID uuid : playerStands.keySet()) {
+            removeFor(uuid);
+        }
+        originalLines.clear();
+    }
+    
+    public void spawnFor(Player player) {
+        if (playerStands.containsKey(player.getUniqueId())) return;
+        
+        playerStands.put(player.getUniqueId(), new CopyOnWriteArrayList<>());
+        for (int i = 0; i < originalLines.size(); i++) {
+            spawnLineFor(player, i, originalLines.get(i));
+        }
+    }
+    
+    private void spawnLineFor(Player player, int lineIndex, String text) {
+        final double height = lineIndex * LINE_HEIGHT;
+        Location spawnLoc = location.clone().subtract(0, height, 0);
+        
+        scheduler.runAtLocation(spawnLoc, task -> {
+            if (player == null || !player.isOnline()) return; // Player might have left
+            
+            ArmorStand stand = (ArmorStand) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.ARMOR_STAND);
+            stand.setVisible(false);
+            stand.setGravity(false);
+            stand.setCustomNameVisible(true);
+            stand.setPersistent(false); // don't save to world
+            stand.addScoreboardTag("deluxehub_active");
+            
+            String parsedText = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(text, player);
+            stand.setCustomName(ColorUtil.color(parsedText).trim());
+            stand.setCanPickupItems(false);
+            
+            // Hide from all OTHER players
+            for (Player other : Bukkit.getOnlinePlayers()) {
+                if (!other.getUniqueId().equals(player.getUniqueId())) {
+                    other.hideEntity(plugin, stand);
+                }
+            }
+            
+            // Hide all OTHER players' existing stands from this player
+            for (Map.Entry<UUID, List<ArmorStand>> entry : playerStands.entrySet()) {
+                if (!entry.getKey().equals(player.getUniqueId())) {
+                    for (ArmorStand otherStand : entry.getValue()) {
+                        player.hideEntity(plugin, otherStand);
+                    }
+                }
+            }
+            
+            List<ArmorStand> stands = playerStands.get(player.getUniqueId());
+            if (stands != null) {
+                stands.add(stand);
+            } else {
+                stand.remove();
+            }
+        });
+    }
+    
+    public void removeFor(UUID uuid) {
+        List<ArmorStand> stands = playerStands.remove(uuid);
+        if (stands != null) {
             for (ArmorStand stand : stands) {
                 scheduler.runAtEntity(stand, task -> stand.remove());
             }
         }
+    }
 
-        stands.clear();
-        lineCounter.set(0);
+    public void updatePlaceholders() {
+        for (Map.Entry<UUID, List<ArmorStand>> entry : playerStands.entrySet()) {
+            Player player = Bukkit.getPlayer(entry.getKey());
+            if (player == null || !player.isOnline()) continue;
+            
+            List<ArmorStand> stands = entry.getValue();
+            for (int i = 0; i < stands.size(); i++) {
+                if (i >= originalLines.size()) break;
+                String originalText = originalLines.get(i);
+                ArmorStand stand = stands.get(i);
+                
+                scheduler.runAtEntity(stand, task -> {
+                    String parsedText = net.zithium.deluxehub.utility.PlaceholderUtil.setPlaceholders(originalText, player);
+                    stand.setCustomName(ColorUtil.color(parsedText).trim());
+                });
+            }
+        }
     }
 
     public Location getLocation() {
         return location;
     }
 
+    public List<String> getLines() {
+        return originalLines;
+    }
+    
     public List<ArmorStand> getStands() {
-        return stands;
+        List<ArmorStand> allStands = new ArrayList<>();
+        for (List<ArmorStand> s : playerStands.values()) {
+            allStands.addAll(s);
+        }
+        return allStands;
     }
 
     public String getName() {

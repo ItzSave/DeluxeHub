@@ -20,6 +20,7 @@ import net.zithium.deluxehub.utility.TextUtil;
 import net.zithium.library.utils.ColorUtil;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
@@ -268,6 +269,7 @@ public class DeluxeHubCommand {
                     defaultMsg.add("&7Created new Hologram called &b" + args.getString(2));
                     defaultMsg.add("&7Use &b/deluxehub holo &7to customise");
                     holo.setLines(defaultMsg);
+                    plugin.getHologramManager().saveHologramsData();
                     Messages.HOLOGRAMS_SPAWNED.send(player, "%name%", args.getString(2));
                     return;
                 }
@@ -308,6 +310,7 @@ public class DeluxeHubCommand {
                         return;
                     }
                     holo.setLine(line, text);
+                    plugin.getHologramManager().saveHologramsData();
                     Messages.HOLOGRAMS_LINE_SET.send(player, "%line%", String.valueOf(line));
                     return;
                 }
@@ -327,6 +330,7 @@ public class DeluxeHubCommand {
                     String text = TextUtil.joinString(4, args.getOriginalArgs());
 
                     holo.addLine(text);
+                    plugin.getHologramManager().saveHologramsData();
                     Messages.HOLOGRAMS_ADDED_LINE.send(player, "%name%", args.getString(2));
                 }
 
@@ -352,12 +356,15 @@ public class DeluxeHubCommand {
                     if (holo.removeLine(line) == null) {
                         plugin.getHologramManager().deleteHologram(args.getString(2));
                         Messages.HOLOGRAMS_REMOVED_LINE.send(player, "%name%", args.getString(2));
+                    } else {
+                        plugin.getHologramManager().saveHologramsData();
+                        Messages.HOLOGRAMS_REMOVED_LINE.send(player, "%name%", args.getString(2));
                     }
 
                     return;
                 }
 
-                if (args.getString(1).equalsIgnoreCase("move")) {
+                if (args.getString(1).equalsIgnoreCase("move") || args.getString(1).equalsIgnoreCase("tphere") || args.getString(1).equalsIgnoreCase("teleporthere")) {
                     if (args.argsLength() == 2) {
                         sender.sendMessage(ColorUtil.color("&cUsage: /deluxehub hologram move <id>"));
                         return;
@@ -371,7 +378,26 @@ public class DeluxeHubCommand {
                     Hologram holo = plugin.getHologramManager().getHologram(args.getString(2));
 
                     holo.setLocation(player.getLocation());
+                    plugin.getHologramManager().saveHologramsData();
                     Messages.HOLOGRAMS_MOVED.send(player, "%name%", args.getString(2));
+                    return;
+                }
+
+                if (args.getString(1).equalsIgnoreCase("purge") || args.getString(1).equalsIgnoreCase("clean")) {
+                    Location loc = player.getLocation();
+                    scheduler.runAtLocation(loc, task -> {
+                        int count = 0;
+                        for (org.bukkit.entity.Entity entity : player.getWorld().getNearbyEntities(loc, 15.0, 15.0, 15.0)) {
+                            if (entity instanceof ArmorStand stand) {
+                                if (!stand.getScoreboardTags().contains("deluxehub_active")) {
+                                    stand.remove();
+                                    count++;
+                                }
+                            }
+                        }
+                        player.sendMessage(ColorUtil.color("&aEliminados " + count + " armor stands fantasma en un radio de 15 bloques."));
+                    });
+                    return;
                 }
             }
         }
