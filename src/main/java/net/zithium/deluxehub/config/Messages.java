@@ -1,7 +1,6 @@
 package net.zithium.deluxehub.config;
 
 import net.zithium.deluxehub.utility.TextUtil;
-import net.zithium.library.utils.ColorUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -88,7 +87,7 @@ public enum Messages {
         }
 
         if (!message.isEmpty()) {
-            receiver.sendMessage(ColorUtil.color(replace(message, replacements)));
+            receiver.sendMessage(TextUtil.parse(replace(message, replacements)));
         }
     }
 

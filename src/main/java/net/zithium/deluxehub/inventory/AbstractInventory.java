@@ -35,7 +35,7 @@ public abstract class AbstractInventory implements Listener {
         }
 
         if (plugin.isPurpurEnviroment()) {
-            scheduler.runTimerAsync(new InventoryTask(this), 1L, value);
+            scheduler.runTimer(new InventoryTask(this), 1L, value);
             refreshEnabled = true;
         } else {
             refreshEnabled = false;

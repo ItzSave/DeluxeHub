@@ -2,7 +2,7 @@ package net.zithium.deluxehub.module.modules.visual.tablist;
 
 import com.google.common.base.Strings;
 import net.zithium.deluxehub.DeluxeHubPlugin;
-import net.zithium.library.utils.ColorUtil;
+import net.zithium.deluxehub.utility.TextUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,10 +16,10 @@ public class TablistHelper {
 
         Objects.requireNonNull(player, "Cannot update tab for null player");
         header = Strings.isNullOrEmpty(header) ?
-                "" : ColorUtil.color(header).replace("%player%", player.getDisplayName());
+                "" : header.replace("%player%", player.getDisplayName());
         footer = Strings.isNullOrEmpty(footer) ?
-                "" : ColorUtil.color(footer).replace("%player%", player.getDisplayName());
+                "" : footer.replace("%player%", player.getDisplayName());
 
-        player.setPlayerListHeaderFooter(header, footer);
+        player.sendPlayerListHeaderAndFooter(TextUtil.parse(header), TextUtil.parse(footer));
     }
 }

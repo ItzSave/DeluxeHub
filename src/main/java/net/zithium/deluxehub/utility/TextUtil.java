@@ -3,10 +3,14 @@ package net.zithium.deluxehub.utility;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class TextUtil {
@@ -15,6 +19,16 @@ public class TextUtil {
 
     private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-OR]");
     private static final Pattern CUSTOM_PATTERN = Pattern.compile("<[^>]+>");
+    private static final Map<Character, String> LEGACY_TAGS = Map.ofEntries(
+            Map.entry('0', "black"), Map.entry('1', "dark_blue"), Map.entry('2', "dark_green"),
+            Map.entry('3', "dark_aqua"), Map.entry('4', "dark_red"), Map.entry('5', "dark_purple"),
+            Map.entry('6', "gold"), Map.entry('7', "gray"), Map.entry('8', "dark_gray"),
+            Map.entry('9', "blue"), Map.entry('a', "green"), Map.entry('b', "aqua"),
+            Map.entry('c', "red"), Map.entry('d', "light_purple"), Map.entry('e', "yellow"),
+            Map.entry('f', "white"), Map.entry('k', "obfuscated"), Map.entry('l', "bold"),
+            Map.entry('m', "strikethrough"), Map.entry('n', "underlined"), Map.entry('o', "italic"),
+            Map.entry('r', "reset")
+    );
 
     public static String fromList(List<?> list) {
         if (list == null || list.isEmpty()) return null;
@@ -67,6 +81,47 @@ public class TextUtil {
         return centerText(input);
     }
 
+    /** Parses MiniMessage while retaining support for legacy ampersand and section codes. */
+    public static Component parse(String input) {
+        if (input == null || input.isEmpty()) return Component.empty();
+
+        String trimmed = input.trim();
+        if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+            try {
+                return GsonComponentSerializer.gson().deserialize(trimmed);
+            } catch (RuntimeException ignored) {
+                // It may be ordinary text beginning with a brace or a bracket.
+            }
+        }
+
+        String normalized = input.replaceAll("(?i)&([0-9A-FK-OR])", "§$1");
+        normalized = normalized.replaceAll("(?i)&#([0-9A-F]{6})", "<#$1>");
+        normalized = normalized.replaceAll("(?i)\\[COLOR=(#[0-9A-F]{6})\\]", "<color:$1>")
+                .replaceAll("(?i)\\[/COLOR\\]", "</color>");
+        var hex = Pattern.compile("(?i)§x(?:§([0-9A-F])){6}").matcher(normalized);
+        StringBuffer buffer = new StringBuffer();
+        while (hex.find()) {
+            String sequence = hex.group();
+            String color = sequence.replaceAll("(?i)§x|§", "");
+            hex.appendReplacement(buffer, java.util.regex.Matcher.quoteReplacement("<#" + color + ">"));
+        }
+        hex.appendTail(buffer);
+        normalized = buffer.toString().replaceAll("(?i)§([0-9A-FK-OR])", "<$1>");
+        var codes = Pattern.compile("<([0-9A-FK-OR])>", Pattern.CASE_INSENSITIVE).matcher(normalized);
+        buffer = new StringBuffer();
+        while (codes.find()) {
+            char code = codes.group(1).toLowerCase(Locale.ROOT).charAt(0);
+            codes.appendReplacement(buffer, "<" + LEGACY_TAGS.get(code) + ">");
+        }
+        codes.appendTail(buffer);
+        normalized = buffer.toString();
+        return MiniMessage.miniMessage().deserialize(normalized);
+    }
+
+    public static String legacy(String input) {
+        return LegacyComponentSerializer.legacySection().serialize(parse(input));
+    }
+
     /**
      * Centers the provided text in Minecraft chat.
      *
@@ -82,11 +137,11 @@ public class TextUtil {
             for (int i = 0; i < spacesNeeded; i++) {
                 centeredText.append(Component.text(" "));
             }
-            centeredText.append(MiniMessage.miniMessage().deserialize(text.replace("<center>", "")));
+            centeredText.append(parse(text.replace("<center>", "")));
 
             return centeredText.build();
         } else {
-            return MiniMessage.miniMessage().deserialize(text);
+            return parse(text);
         }
     }
 

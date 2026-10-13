@@ -2,7 +2,7 @@ package net.zithium.deluxehub.module.modules.visual.scoreboard;
 
 import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.zithium.deluxehub.utility.TextUtil;
 import net.zithium.deluxehub.DeluxeHubPlugin;
 import net.zithium.deluxehub.utility.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -17,8 +17,6 @@ import java.util.logging.Level;
 public class ScoreHelper {
 
     private static final DeluxeHubPlugin plugin = JavaPlugin.getPlugin(DeluxeHubPlugin.class);
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-
     private final Player player;
     private final Scoreboard scoreboard;
     private Objective objective;
@@ -100,7 +98,7 @@ public class ScoreHelper {
     }
 
     private Component parse(String text) {
-        return MINI_MESSAGE.deserialize(PlaceholderUtil.setPlaceholders(text, player));
+        return TextUtil.parse(PlaceholderUtil.setPlaceholders(text, player));
     }
 
     private String getEntry(int slot) {

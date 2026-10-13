@@ -78,7 +78,7 @@ public class AutoBroadcast extends Module implements Runnable {
                     continue;
                 }
 
-                broadcasts.get(count).forEach(message -> player.sendMessage(TextUtil.color(message)));
+                broadcasts.get(count).forEach(message -> player.sendMessage(TextUtil.parse(message)));
 
                 if (sound != null) {
                     player.playSound(player.getLocation(), sound, (float) volume, (float) pitch);
