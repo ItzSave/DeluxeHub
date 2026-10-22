@@ -52,6 +52,10 @@ public class ItemStackBuilder {
             if (player != null) builder.withName(section.getString("display_name"), player);
             else builder.withName(section.getString("display_name"));
         }
+        
+        if (section.contains("hide_tooltip") && section.getBoolean("hide_tooltip")) {
+            builder.withHideTooltip();
+        }
 
         if (section.contains("lore")) {
             if (player != null) builder.withLore(section.getStringList("lore"), player);
@@ -170,6 +174,13 @@ public class ItemStackBuilder {
         ITEM_STACK.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 1);
         return this;
     }
+    
+	private ItemStackBuilder withHideTooltip() {
+		final ItemMeta meta = ITEM_STACK.getItemMeta();
+		meta.setHideTooltip(true);
+		ITEM_STACK.setItemMeta(meta);
+		return this;
+	}
 
     public ItemStack build() {
         return ITEM_STACK;
