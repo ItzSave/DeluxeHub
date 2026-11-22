@@ -10,6 +10,7 @@ import net.zithium.deluxehub.module.ModuleType;
 import net.zithium.deluxehub.utility.TextUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -40,9 +41,12 @@ public class AutoBroadcast extends Module implements Runnable {
 
         broadcasts = new HashMap<>();
         int count = 0;
-        for (String key : config.getConfigurationSection("announcements.announcements").getKeys(false)) {
-            broadcasts.put(count, config.getStringList("announcements.announcements." + key));
-            count++;
+        ConfigurationSection section = config.getConfigurationSection("announcements.announcements");
+        if (section != null) { // an empty "announcements:" key loads as null
+            for (String key : section.getKeys(false)) {
+                broadcasts.put(count, section.getStringList(key));
+                count++;
+            }
         }
 
         if (config.getBoolean("announcements.sound.enabled")) {
