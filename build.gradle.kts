@@ -30,7 +30,11 @@ dependencies {
     implementation("de.tr7zw:item-nbt-api:2.16.1") // UPDATE THIS FOR EACH NEW MC VERSION
     implementation("org.bstats:bstats-bukkit-lite:1.8")
     implementation("com.github.shynixn.headdatabase:hdb-api:1.0")
-    implementation("com.github.ItzSave:ZithiumLibrary:2.1.1")
+    implementation("com.github.ItzSave:ZithiumLibrary:2.1.1") {
+        // Adventure is provided by Paper at runtime; shading or relocating it breaks
+        // calls into Paper API methods that take Adventure types (e.g. PlayerJoinEvent#joinMessage)
+        exclude(group = "net.kyori")
+    }
 
     compileOnly("io.papermc.paper:paper-api:26.3-rc-3.build.1-alpha")
     compileOnly("net.md-5:bungeecord-chat:1.21-R0.4")
@@ -67,7 +71,6 @@ tasks {
         relocate("com.tcoded.folialib", "net.zithium.deluxehub.libs.folialib")
         relocate("de.tr7zw.changeme.nbtapi", "net.zithium.deluxehub.libs.nbt")
         relocate("net.zithium.library", "net.zithium.deluxehub.libs.library")
-        relocate("net.kyori.adventure", "net.zithium.deluxehub.libs.adventure")
         relocate("com.cryptomorin.xseries", "net.zithium.deluxehub.libs.xseries")
     }
 }
